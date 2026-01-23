@@ -1,0 +1,42 @@
+# OS files (macOS / Windows / Linux)
+.DS_Store
+.AppleDouble
+.LSOverride
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+*~
+*.swp
+*.swo
+
+# IDE / Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+logs/
+*.log
+
+# Environment / Secrets
+.env
+.env.local
+.env.*.local
+
+# Uploads (user generated)
+public/uploads/*
+!public/uploads/.htaccess
+
+# Database dumps / local sql
+database/*.sql.bak
+database/*.dump
+
+# Cache / temp
+cache/
+tmp/
+
+# Vendor
+vendor/
+composer.lock
