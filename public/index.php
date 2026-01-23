@@ -28,7 +28,28 @@ switch ($url) {
         $controller = new UserController($conn);
         $controller->index();
         break;
-        
+    case 'users/store':
+        require_once '../app/controllers/AuthController.php';
+        $controller = new AuthController($conn);
+        $controller->storeUser();  // Method baru
+        break;
+    case 'subjects':
+        require_once '../app/controllers/SubjectController.php';
+        $controller = new SubjectController($conn);
+        $controller->index();
+        break;
+    case 'subjects/create':
+        require_once '../app/controllers/SubjectController.php';
+        $controller = new SubjectController($conn);
+        $controller->create();
+        break;
+    case 'subjects/store':
+        require_once '../app/controllers/SubjectController.php';
+        $controller = new SubjectController($conn);
+        $controller->store();
+        break;
+// Edit, update, delete nanti ditambah
+
     default:
         if (!isset($_SESSION['user_id'])) {
             header('Location: ?url=login');

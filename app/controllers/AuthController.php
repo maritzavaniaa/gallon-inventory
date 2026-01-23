@@ -9,31 +9,29 @@ class AuthController {
     }
     
     public function register() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $username = trim($_POST['username']);
-            $password = $_POST['password'];
-            $user_name = trim($_POST['user_name']);
-            
-            // Validasi
-            if (empty($username) || empty($password) || empty($user_name)) {
-                $error = "Semua field wajib diisi";
-            } elseif (strlen($password) < 6) {
-                $error = "Password minimal 6 karakter";
-            } elseif ($this->userModel->usernameExists($username)) {
-                $error = "Username sudah terdaftar";
-            } else {
-                // Register user
-                if ($this->userModel->register($username, $password, $user_name)) {
-                    $success = "Registrasi berhasil! Silakan login.";
-                } else {
-                    $error = "Registrasi gagal. Coba lagi.";
-                }
-            }
+        // Hanya admin yang bisa akses register
+        if ($_SESSION['role'] != 'admin') {
+            header('Location: ?url=dashboard');
+            exit;
         }
         
-        // Load view
+        // Sisanya sama, tapi role fixed jadi 'general_user'
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // ... validasi sama ...
+
+            $username = trim($_POST['username'] ?? '');
+            $password = $_POST['password'] ?? '';
+            $user_name = trim($_POST['user_name'] ?? '');
+            
+            if ($this->userModel->register($username, $password, $user_name, 'general_user')) {  // Fixed role
+                $success = "General User berhasil dibuat!";
+            }
+            // ...
+        }
+        
         require_once '../app/views/auth/register.php';
     }
+    
 
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -65,6 +63,29 @@ class AuthController {
         
         // Load view login
         require_once '../app/views/auth/login.php';
+    }
+    
+    public function storeUser() {
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+        $user_name = trim($_POST['user_name'] ?? '');
+        
+        if (empty($username) || empty($password) || empty($user_name)) {
+            $_SESSION['error'] = "Semua field wajib diisi";
+        } elseif (strlen($password) < 6) {
+            $_SESSION['error'] = "Password minimal 6 karakter";
+        } elseif ($this->userModel->usernameExists($username)) {
+            $_SESSION['error'] = "Username sudah ada";
+        } else {
+            if ($this->userModel->register($username, $password, $user_name, 'general_user')) {
+                $_SESSION['success'] = "General User berhasil dibuat!";
+            } else {
+                $_SESSION['error'] = "Gagal membuat user";
+            }
+        }
+        
+        header('Location: ?url=users');
+        exit;
     }
     
 }
