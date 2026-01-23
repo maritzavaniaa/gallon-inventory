@@ -20,6 +20,10 @@
             </div>
         <?php endif; ?>
         
+        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+            <strong>Admin Only:</strong> Buat akun General User untuk petugas.
+        </div>
+
         <form method="POST" action="">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
@@ -35,6 +39,8 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2">Password</label>
                 <input type="password" name="password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500" required>
             </div>
+
+            <p class="text-xs text-gray-500 mt-2">Role otomatis: general_user</p>
             
             <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
                 Daftar
