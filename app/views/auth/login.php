@@ -4,17 +4,27 @@
     <title>Login - Galon Inventory</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gradient-to-r from-blue-500 to-purple-600 min-h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full mx-4">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Galon Inventory</h2>
         
-        <?php if (isset($error)): ?>
+        <?php if (isset($error) && $error): ?>
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-                <?= $error ?>
+                <?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
-        
+
+
+        <?php if (isset($_GET['expired'])): ?>
+            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+                Session expired. Silakan login lagi.
+            </div>
+        <?php endif; ?>
+
         <form method="POST" action="">
+            <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2">Username</label>
                 <input type="text" name="username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
@@ -30,10 +40,6 @@
             </button>
         </form>
         
-        <p class="text-center mt-6 text-sm text-gray-600">
-            Belum punya akun? 
-            <a href="?url=register" class="text-blue-500 hover:underline font-semibold">Daftar Admin</a>
-        </p>
     </div>
 </body>
 </html>

@@ -1,18 +1,25 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Session config 8 jam
+ini_set('session.gc_maxlifetime', 28800);
+ini_set('session.cookie_lifetime', 28800);
+session_set_cookie_params(28800);
+
+// Security headers
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
 
 session_start();
-require_once '../app/config/database.php'; // Cuma require, tidak ada echo
+require_once '../app/helpers/functions.php';
+require_once '../app/config/database.php'; 
+
+// Check session expiry setiap halaman
+checkSessionExpiry();
 
 // Simple router berdasarkan $_GET['url']
 $url = $_GET['url'] ?? 'dashboard';
 
 switch ($url) {
-    // case 'register':
-        // ... sama
-        // break;
     case 'login':
         require_once '../app/controllers/AuthController.php';
         $controller = new AuthController($conn);
@@ -48,7 +55,6 @@ switch ($url) {
         $controller = new SubjectController($conn);
         $controller->store();
         break;
-// Edit, update, delete nanti ditambah
 
     default:
         if (!isset($_SESSION['user_id'])) {
