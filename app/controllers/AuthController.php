@@ -35,7 +35,7 @@ class AuthController {
 
     public function login() {
         $error = '';
-        
+
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
                 $error = "Request tidak valid";
@@ -65,6 +65,12 @@ class AuthController {
     }
     
     public function storeUser() {
+        if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = "Request tidak valid (CSRF Token Invalid)";
+            header('Location: ?url=users');
+            exit;
+        }
+        
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $user_name = trim($_POST['user_name'] ?? '');

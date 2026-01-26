@@ -13,11 +13,12 @@ session_start();
 require_once '../app/helpers/functions.php';
 require_once '../app/config/database.php'; 
 
-// Check session expiry setiap halaman
-checkSessionExpiry();
-
 // Simple router berdasarkan $_GET['url']
 $url = $_GET['url'] ?? 'dashboard';
+
+if ($url !== 'login') {
+    checkSessionExpiry();
+}
 
 switch ($url) {
     case 'login':
@@ -61,25 +62,45 @@ switch ($url) {
             header('Location: ?url=login');
             exit;
         }
-        
-        // Dashboard sederhana
-        echo "<div class='container mx-auto p-6'>";
-        echo "<h1 class='text-3xl font-bold mb-4'>Dashboard - {$_SESSION['username']}</h1>";
-        echo "<p>Role: <strong>{$_SESSION['role']}</strong></p>";
-        
-        if ($_SESSION['role'] == 'admin') {
-            echo "<h2 class='text-xl mt-6'>Admin Menu:</h2>";
-            echo "<ul class='list-disc list-inside mt-2'>";
-            echo "<li><a href='?url=users' class='text-blue-500 hover:underline'>Kelola User</a></li>";
-            echo "<li><a href='?url=subjects' class='text-blue-500 hover:underline'>Kelola Karyawan</a></li>";
-            echo "</ul>";
-        }
-        
-        echo "<a href='?url=logout' class='bg-red-500 text-white px-4 py-2 rounded mt-4 inline-block'>Logout</a>";
-        echo "</div>";
-        break;
-    
-    
-}
-
+        ?>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Dashboard</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; background: #f3f4f6; }
+                .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
+                .btn { display: inline-block; padding: 12px 24px; margin: 8px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: all 0.3s; }
+                .btn-blue { background: #3b82f6; color: white; }
+                .btn-blue:hover { background: #2563eb; }
+                .btn-red { background: #ef4444; color: white; }
+                .btn-red:hover { background: #dc2626; }
+                .btn-green { background: #10b981; color: white; }
+                .btn-green:hover { background: #059669; }
+                h1 { color: #1f2937; margin-bottom: 20px; }
+            </style>
+        </head>
+        <body>
+            <div class="card">
+                <h1>🏆 Dashboard Galon Inventory</h1>
+                <p><strong>Selamat datang:</strong> <?= htmlspecialchars($_SESSION['username']) ?></p>
+                <p><strong>Role:</strong> <?= ucfirst($_SESSION['role']) ?></p>
+                
+                <?php if ($_SESSION['role'] == 'admin'): ?>
+                <div style="margin: 30px 0;">
+                    <h2 style="color: #374151; margin-bottom: 20px;">Admin Panel</h2>
+                    <a href="?url=users" class="btn btn-blue">👥 Kelola User</a>
+                    <a href="?url=subjects" class="btn btn-green">👨‍💼 Kelola Karyawan</a>
+                </div>
+                <?php endif; ?>
+                
+                <a href="?url=logout" class="btn btn-red">🚪 Logout</a>
+            </div>
+        </body>
+        </html>
+        <?php 
+        exit; 
+} 
 ?>
