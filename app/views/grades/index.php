@@ -45,24 +45,37 @@
             <!-- Tabel Grade -->
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse bg-white">
-                    <thead class="bg-gray-200">
-                        <tr>
-                            <th class="border p-4 text-left font-semibold">ID</th>
-                            <th class="border p-4 text-left font-semibold">Nama Grade</th>
-                            <th class="border p-4 text-left font-semibold">Kuota Galon/Bulan</th>
-                            <th class="border p-4 text-left font-semibold">Dibuat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($grades as $grade): ?>
-                        <tr class="hover:bg-gray-50">
-                            <td class="border p-4"><?= $grade['id_grade'] ?></td>
-                            <td class="border p-4 font-semibold"><?= htmlspecialchars($grade['name_grade']) ?></td>
-                            <td class="border p-4 text-blue-600 font-bold"><?= $grade['default_allowance'] ?> galon</td>
-                            <td class="border p-4"><?= date('d/m/Y', strtotime($grade['created_at'])) ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="border p-4 text-left font-semibold">ID</th>
+                        <th class="border p-4 text-left font-semibold">Nama Grade</th>
+                        <th class="border p-4 text-left font-semibold">Kuota Galon/Bulan</th>
+                        <th class="border p-4 text-left font-semibold">Dibuat</th>
+                        <th class="border p-4 text-center font-semibold">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($grades as $grade): ?>
+                    <tr class="hover:bg-gray-50">
+                        <td class="border p-4"><?= $grade['id_grade'] ?></td>
+                        <td class="border p-4 font-semibold"><?= htmlspecialchars($grade['name_grade']) ?></td>
+                        <td class="border p-4 text-blue-600 font-bold"><?= $grade['default_allowance'] ?> galon</td>
+                        <td class="border p-4"><?= date('d/m/Y', strtotime($grade['created_at'])) ?></td>
+                        <td class="border p-4 text-center">
+                            <a href="?url=grades/edit/<?= $grade['id_grade'] ?>" 
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold mr-2">
+                                ✏️ Edit
+                            </a>
+                            <a href="?url=grades/delete/<?= $grade['id_grade'] ?>" 
+                            onclick="return confirm('Yakin hapus grade <?= htmlspecialchars($grade['name_grade']) ?>?')" 
+                            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-semibold">
+                                🗑️ Hapus
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+
                 </table>
             </div>
         </div>

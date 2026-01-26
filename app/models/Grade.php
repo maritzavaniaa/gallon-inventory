@@ -33,5 +33,13 @@ class Grade {
         $stmt->bind_param("siii", $name_grade, $default_allowance, $_SESSION['user_id'], $id);
         return $stmt->execute();
     }
+
+    public function delete($id) {
+        $sql = "DELETE FROM grade_employee WHERE id_grade = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
+    
 }
 ?>

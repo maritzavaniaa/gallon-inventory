@@ -42,5 +42,21 @@ class GradeController {
         }
         exit;
     }
+
+    public function edit($id) {
+        $grade = $this->gradeModel->findById($id);
+        $grades = $this->gradeModel->getAll(); 
+        require_once '../app/views/grades/edit.php';
+    }
+    
+    public function delete($id) {
+        if ($this->gradeModel->delete($id)) {
+            header('Location: ?url=grades&success=3');
+        } else {
+            header('Location: ?url=grades&error=3');
+        }
+        exit;
+    }
+    
 }
 ?>
