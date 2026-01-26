@@ -10,11 +10,26 @@
             <h1 class="text-3xl font-bold mb-4">Kelola User</h1>
             <a href="?url=dashboard" class="bg-gray-500 text-white px-4 py-2 rounded">← Kembali</a>
         </div>
+
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 shadow-sm" role="alert">
+                <p class="font-bold">Gagal!</p>
+                <p><?= $_SESSION['error']; unset($_SESSION['error']); ?></p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['success'])): ?>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 shadow-sm" role="alert">
+                <p class="font-bold">Berhasil!</p>
+                <p><?= $_SESSION['success']; unset($_SESSION['success']); ?></p>
+            </div>
+        <?php endif; ?>
         
         <!-- FORM TAMBAH GENERAL USER -->
         <div class="bg-blue-50 border-2 border-blue-200 p-6 rounded-lg mb-6">
             <h2 class="text-xl font-semibold mb-4 text-blue-800">Tambah General User</h2>
             <form method="POST" action="?url=users/store" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
                 <div>
                     <label class="block text-sm font-medium mb-2">Username</label>
                     <input type="text" name="username" required 
