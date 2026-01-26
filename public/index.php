@@ -56,6 +56,17 @@ switch ($url) {
         $controller = new SubjectController($conn);
         $controller->store();
         break;
+    case 'grades':
+        require_once '../app/controllers/GradeController.php';
+        $controller = new GradeController($conn);
+        $controller->index();
+        break;
+    case 'grades/store':
+        require_once '../app/controllers/GradeController.php';
+        $controller = new GradeController($conn);
+        $controller->store();
+        break;
+
 
     default:
         if (!isset($_SESSION['user_id'])) {
@@ -91,10 +102,14 @@ switch ($url) {
                 <?php if ($_SESSION['role'] == 'admin'): ?>
                 <div style="margin: 30px 0;">
                     <h2 style="color: #374151; margin-bottom: 20px;">Admin Panel</h2>
-                    <a href="?url=users" class="btn btn-blue">👥 Kelola User</a>
-                    <a href="?url=subjects" class="btn btn-green">👨‍💼 Kelola Karyawan</a>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                        <a href="?url=users" class="btn btn-blue">👥 Kelola User</a>
+                        <a href="?url=grades" style="background: #f59e0b; color: white;" class="btn">🏅 Kelola Grade</a>
+                        <a href="?url=subjects" class="btn btn-green">👨‍💼 Kelola Karyawan</a>
+                    </div>
                 </div>
                 <?php endif; ?>
+
                 
                 <a href="?url=logout" class="btn btn-red">🚪 Logout</a>
             </div>
