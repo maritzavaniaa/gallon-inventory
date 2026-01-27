@@ -37,12 +37,20 @@
                         ❌ Batal
                     </a>
                     
-                    <a href="?url=grades/delete/<?= $grade['id_grade'] ?>" 
-                       onclick="return confirm('Yakin hapus grade ini?')" 
-                       class="w-full bg-red-500 hover:bg-red-600 text-white text-lg font-bold py-4 rounded-lg text-center transition">
-                        🗑️ Hapus Grade
-                    </a>
-                    
+                    <?php if (!$isInUse): ?>
+                        <!-- JIKA TIDAK DIGUNAKAN: tombol merah aktif -->
+                        <a href="?url=grades/delete/<?= $grade['id_grade'] ?>" 
+                        onclick="return confirm('Yakin hapus grade ini?')" 
+                        class="w-full bg-red-500 hover:bg-red-600 text-white text-lg font-bold py-4 rounded-lg text-center transition">
+                            🗑️ Hapus Grade
+                        </a>
+                    <?php else: ?>
+                        <!-- JIKA DIGUNAKAN: tombol abu disabled -->
+                        <div class="w-full bg-gray-300 text-gray-600 text-lg font-bold py-4 rounded-lg text-center cursor-not-allowed">
+                            🔒 Hapus Tidak Tersedia (Sedang Digunakan)
+                        </div>
+                    <?php endif; ?>
+
                     <a href="?url=grades" 
                        class="w-full bg-blue-500 hover:bg-blue-600 text-white text-lg font-bold py-4 rounded-lg text-center transition">
                         🏠 Kembali ke Daftar Grade

@@ -19,6 +19,17 @@
                 Data berhasil disimpan!
             </div>
             <?php endif; ?>
+
+            <?php if (isset($_GET['error'])): ?>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                <?php if ($_GET['error'] == 'in_use'): ?>
+                    ❌ Tidak dapat menghapus! Grade ini sedang digunakan oleh karyawan. 
+                <?php else: ?>
+                    ❌ Terjadi kesalahan. Silakan coba lagi.
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
+
             
             <!-- Form Tambah Grade -->
             <div class="bg-blue-50 border-2 border-blue-200 p-6 rounded-lg mb-6">
