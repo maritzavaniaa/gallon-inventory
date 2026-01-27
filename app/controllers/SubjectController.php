@@ -18,6 +18,9 @@ class SubjectController {
     }
     
     public function create() {
+        require_once '../app/models/Grade.php';
+        $gradeModel = new Grade($this->db);
+        $grades = $gradeModel->getAll();
         require_once '../app/views/subjects/create.php';
     }
     

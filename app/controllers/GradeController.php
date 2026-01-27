@@ -4,12 +4,14 @@ require_once '../app/middleware/AuthMiddleware.php';
 
 class GradeController {
     private $gradeModel;
-    
+    private $db;
+
     public function __construct($db) {
         AuthMiddleware::checkAdmin();
+        $this->db = $db;
         $this->gradeModel = new Grade($db);
     }
-    
+
     public function index() {
         $grades = $this->gradeModel->getAll();
         require_once '../app/views/grades/index.php';
@@ -28,6 +30,10 @@ class GradeController {
         }
         exit;
     }
+
+    public function create() {
+        require_once '../app/views/grades/create.php';
+    }
     
     public function update($id) {
         if ($_POST) {
@@ -45,11 +51,33 @@ class GradeController {
 
     public function edit($id) {
         $grade = $this->gradeModel->findById($id);
-        $grades = $this->gradeModel->getAll(); 
+        $grades = $this->gradeModel->getAll();
+        
+        // CEK apakah grade sedang digunakan oleh karyawan
+        $sql = "SELECT COUNT(*) as total FROM subject WHERE id_grade = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        $isInUse = $result['total'] > 0; // TRUE jika ada karyawan pakai grade ini
+        
         require_once '../app/views/grades/edit.php';
     }
     
+    
     public function delete($id) {
+        // Cek apakah grade sedang digunakan
+        $sql = "SELECT COUNT(*) as total FROM subject WHERE id_grade = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        if ($result['total'] > 0) {
+            header('Location: ?url=grades&error=in_use');
+            exit;
+        }
+        
         if ($this->gradeModel->delete($id)) {
             header('Location: ?url=grades&success=3');
         } else {
@@ -57,6 +85,5 @@ class GradeController {
         }
         exit;
     }
-    
 }
 ?>

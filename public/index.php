@@ -16,6 +16,9 @@ session_start();
 require_once '../app/helpers/functions.php';
 require_once '../app/config/database.php'; 
 
+$database = new Database();
+$db = $database->getConnection();
+
 // Simple router
 $url = $_GET['url'] ?? 'dashboard';
 
@@ -26,7 +29,7 @@ if ($url !== 'login') {
 switch ($url) {
     case 'login':
         require_once '../app/controllers/AuthController.php';
-        $controller = new AuthController($conn);
+        $controller = new AuthController($db);
         $controller->login();
         break;
         
@@ -34,85 +37,109 @@ switch ($url) {
         session_destroy();
         header('Location: ?url=login');
         exit;
+
+    case 'dashboard':
+        require_once '../app/controllers/DashboardController.php';
+        $controller = new DashboardController($db);
+        $controller->index();
+        break;
         
     case 'users':
         require_once '../app/controllers/UserController.php';
-        $controller = new UserController($conn);
+        $controller = new UserController($db);
         $controller->index();
         break;
         
     case 'users/store':
         require_once '../app/controllers/AuthController.php';
-        $controller = new AuthController($conn);
+        $controller = new AuthController($db);
         $controller->storeUser();
         break;
         
     case 'subjects':
         require_once '../app/controllers/SubjectController.php';
-        $controller = new SubjectController($conn);
+        $controller = new SubjectController($db);
         $controller->index();
         break;
         
     case 'subjects/create':
         require_once '../app/controllers/SubjectController.php';
-        $controller = new SubjectController($conn);
+        $controller = new SubjectController($db);
         $controller->create();
         break;
         
     case 'subjects/store':
         require_once '../app/controllers/SubjectController.php';
-        $controller = new SubjectController($conn);
+        $controller = new SubjectController($db);
         $controller->store();
         break;
         
     case 'grades':
         require_once '../app/controllers/GradeController.php';
-        $controller = new GradeController($conn);
+        $controller = new GradeController($db);
         $controller->index();
         break;
         
     case 'grades/store':
         require_once '../app/controllers/GradeController.php';
-        $controller = new GradeController($conn);
+        $controller = new GradeController($db);
         $controller->store();
         break;
+
+    case 'grades/create':
+        require_once '../app/controllers/GradeController.php';
+        $controller = new GradeController($db);
+        $controller->create();
+        break;
+
+    case 'transactions':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->index();
+        break;
         
+    case 'reports':
+        require_once '../app/controllers/ReportController.php';
+        $controller = new ReportController($db);
+        $controller->index();
+        break;
+       
     default:
         // Dynamic routing untuk edit/update/delete dengan ID
         if (strpos($url, 'grades/edit/') === 0) {
             $id = (int)str_replace('grades/edit/', '', $url);
             require_once '../app/controllers/GradeController.php';
-            $controller = new GradeController($conn);
+            $controller = new GradeController($db);
             $controller->edit($id);
             
         } elseif (strpos($url, 'grades/update/') === 0) {
             $id = (int)str_replace('grades/update/', '', $url);
             require_once '../app/controllers/GradeController.php';
-            $controller = new GradeController($conn);
+            $controller = new GradeController($db);
             $controller->update($id);
             
         } elseif (strpos($url, 'grades/delete/') === 0) {
             $id = (int)str_replace('grades/delete/', '', $url);
             require_once '../app/controllers/GradeController.php';
-            $controller = new GradeController($conn);
+            $controller = new GradeController($db);
             $controller->delete($id);
             
         } elseif (strpos($url, 'subjects/edit/') === 0) {
             $id_share = str_replace('subjects/edit/', '', $url);
             require_once '../app/controllers/SubjectController.php';
-            $controller = new SubjectController($conn);
+            $controller = new SubjectController($db);
             $controller->edit($id_share);
             
         } elseif (strpos($url, 'subjects/update/') === 0) {
             $id_share = str_replace('subjects/update/', '', $url);
             require_once '../app/controllers/SubjectController.php';
-            $controller = new SubjectController($conn);
+            $controller = new SubjectController($db);
             $controller->update($id_share);
             
         } elseif (strpos($url, 'subjects/delete/') === 0) {
             $id_share = str_replace('subjects/delete/', '', $url);
             require_once '../app/controllers/SubjectController.php';
-            $controller = new SubjectController($conn);
+            $controller = new SubjectController($db);
             $controller->delete($id_share);
             
         } else {
@@ -121,49 +148,10 @@ switch ($url) {
                 header('Location: ?url=login');
                 exit;
             }
-            ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f3f4f6; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
-        .btn { display: inline-block; padding: 12px 24px; margin: 8px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: all 0.3s; }
-        .btn-blue { background: #3b82f6; color: white; }
-        .btn-blue:hover { background: #2563eb; }
-        .btn-red { background: #ef4444; color: white; }
-        .btn-red:hover { background: #dc2626; }
-        .btn-green { background: #10b981; color: white; }
-        .btn-green:hover { background: #059669; }
-        h1 { color: #1f2937; margin-bottom: 20px; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>🏆 Dashboard Galon Inventory</h1>
-        <p><strong>Selamat datang:</strong> <?= htmlspecialchars($_SESSION['username']) ?></p>
-        <p><strong>Role:</strong> <?= ucfirst($_SESSION['role']) ?></p>
-        
-        <?php if ($_SESSION['role'] == 'admin'): ?>
-        <div style="margin: 30px 0;">
-            <h2 style="color: #374151; margin-bottom: 20px;">Admin Panel</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
-                <a href="?url=users" class="btn btn-blue">👥 Kelola User</a>
-                <a href="?url=grades" style="background: #f59e0b; color: white;" class="btn">🏅 Kelola Grade</a>
-                <a href="?url=subjects" class="btn btn-green">👨‍💼 Kelola Karyawan</a>
-            </div>
-        </div>
-        <?php endif; ?>
-        
-        <a href="?url=logout" class="btn btn-red">🚪 Logout</a>
-    </div>
-</body>
-</html>
-            <?php 
-            exit;
+            
+            require_once '../app/controllers/DashboardController.php';
+            $controller = new DashboardController($db);
+            $controller->index();
         }
 }
 ?>
