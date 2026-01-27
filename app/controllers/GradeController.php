@@ -30,6 +30,10 @@ class GradeController {
         }
         exit;
     }
+
+    public function create() {
+        require_once '../app/views/grades/create.php';
+    }
     
     public function update($id) {
         if ($_POST) {
