@@ -4,9 +4,11 @@ require_once '../app/middleware/AuthMiddleware.php';
 
 class SubjectController {
     private $subjectModel;
+    private $db;
     
     public function __construct($db) {
         AuthMiddleware::checkAdmin();
+        $this->db = $db;
         $this->subjectModel = new Subject($db);
     }
     
@@ -21,13 +23,19 @@ class SubjectController {
     
     public function store() {
         if ($_POST) {
+            // Validasi ID Share unik
+            if ($this->subjectModel->checkIdExists($_POST['id_share'])) {
+                header('Location: ?url=subjects/create&error=duplicate');
+                exit;
+            }
+            
             $data = [
-                'id_share' => $_POST['id_share'],
+                'id_share' => strtoupper(trim($_POST['id_share'])),
                 'type_subject' => $_POST['type_subject'],
-                'name_subject' => $_POST['name_subject'],
-                'division' => $_POST['division'] ?? '',
-                'status' => $_POST['status'],
-                'inactive_note' => $_POST['inactive_note'] ?? '',
+                'name_subject' => trim($_POST['name_subject']),
+                'division' => trim($_POST['division'] ?? ''),
+                'status' => 'aktif', // Default aktif
+                'inactive_note' => '',
                 'id_grade' => $_POST['id_grade'] ?? null,
                 'default_allowance' => $_POST['default_allowance'] ?? null
             ];
@@ -43,13 +51,34 @@ class SubjectController {
     
     public function edit($id_share) {
         $subject = $this->subjectModel->findById($id_share);
+        if (!$subject) {
+            header('Location: ?url=subjects&error=notfound');
+            exit;
+        }
+        
+        // Load grades untuk dropdown
+        require_once '../app/models/Grade.php';
+        $gradeModel = new Grade($this->db);
+        $grades = $gradeModel->getAll();
+        
+        // Cek apakah punya transaksi
+        $hasTransaction = $this->subjectModel->checkHasTransaction($id_share);
+        
         require_once '../app/views/subjects/edit.php';
     }
     
     public function update($id_share) {
         if ($_POST) {
-            $data = $_POST;
-            $data['id_share'] = $id_share;
+            $data = [
+                'id_share' => $id_share,
+                'type_subject' => $_POST['type_subject'],
+                'name_subject' => trim($_POST['name_subject']),
+                'division' => trim($_POST['division'] ?? ''),
+                'status' => $_POST['status'],
+                'inactive_note' => trim($_POST['inactive_note'] ?? ''),
+                'id_grade' => $_POST['id_grade'] ?? null,
+                'default_allowance' => $_POST['default_allowance'] ?? null
+            ];
             
             if ($this->subjectModel->update($data)) {
                 header('Location: ?url=subjects&success=2');
@@ -60,7 +89,13 @@ class SubjectController {
         exit;
     }
     
-    public function destroy($id_share) {
+    public function delete($id_share) {
+        // Cek apakah punya transaksi
+        if ($this->subjectModel->checkHasTransaction($id_share)) {
+            header('Location: ?url=subjects&error=has_transaction');
+            exit;
+        }
+        
         if ($this->subjectModel->delete($id_share)) {
             header('Location: ?url=subjects&success=3');
         } else {
