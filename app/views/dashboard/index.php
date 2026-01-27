@@ -1,24 +1,22 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sistem Galon</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100">
-    <?php include '../app/views/layouts/sidebar.php'; ?>
+<?php 
+$pageTitle = 'Dashboard - Sistem Galon';
+ob_start(); 
+?>
+
+<div class="bg-white rounded-xl shadow-lg p-12 text-center">
+    <div class="mb-6">
+        <span class="text-8xl">😼</span>
+    </div>
+    <h1 class="text-5xl font-bold text-gray-800 mb-4">Dashboard</h1>
+    <p class="text-xl text-gray-600">Halaman untuk dashboard</p>
     
-    <main class="ml-64 p-8">
-        <div class="bg-white rounded-xl shadow-lg p-12 text-center">
-            <h1 class="text-6xl font-bold text-gray-800 mb-4">🏠 Dashboard</h1>
-            <p class="text-2xl text-gray-600">Sistem Manajemen Stok Galon</p>
-            
-            <div class="mt-8 text-gray-500">
-                <p>Selamat datang, <strong><?= htmlspecialchars($_SESSION['username'] ?? 'Admin') ?></strong>!</p>
-                <p class="mt-2">Gunakan menu di samping untuk navigasi.</p>
-            </div>
-        </div>
-    </main>
-</body>
-</html>
+    <div class="mt-8 p-6 bg-blue-50 rounded-lg inline-block">
+        <p class="text-gray-700 font-semibold">🚧 Under Development</p>
+        <p class="text-sm text-gray-600 mt-2">Fitur ini akan segera hadir!</p>
+    </div>
+</div>
+
+<?php 
+$content = ob_get_clean();
+include '../app/views/layouts/main.php';
+?>
