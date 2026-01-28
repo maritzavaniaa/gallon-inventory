@@ -35,7 +35,7 @@ class AuthController {
 
     public function login() {
         $error = '';
-
+    
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
                 $error = "Request tidak valid";
@@ -47,7 +47,17 @@ class AuthController {
                     $error = "Username dan password wajib diisi";
                 } else {
                     $user = $this->userModel->login($username, $password);
-                    if ($user) {
+                    
+                    if ($user === false) {
+                        // Check specifically if account is inactive
+                        $checkUser = $this->userModel->getUserByUsername($username);
+                        if ($checkUser && isset($checkUser['status']) && $checkUser['status'] == 'non_aktif') {
+                            $error = "Akun Anda telah dinonaktifkan. Hubungi administrator.";
+                        } else {
+                            $error = "Username atau password salah";
+                        }
+                    } else {
+                        // Login success
                         $_SESSION['user_id'] = $user['id_user'];
                         $_SESSION['username'] = $user['username'];
                         $_SESSION['role'] = $user['role'];
@@ -55,8 +65,6 @@ class AuthController {
                         
                         header('Location: ?url=dashboard');
                         exit;
-                    } else {
-                        $error = "Username atau password salah";
                     }
                 }
             }
@@ -64,34 +72,40 @@ class AuthController {
         require_once '../app/views/auth/login.php';
     }
     
+    
     public function storeUser() {
         if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-            $_SESSION['error'] = "Request tidak valid (CSRF Token Invalid)";
-            header('Location: ?url=users');
+            header('Location: ?url=users/create&error=csrf');
             exit;
         }
         
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
-        $user_name = trim($_POST['user_name'] ?? '');
+        $role = trim($_POST['role'] ?? '');
         
-        if (empty($username) || empty($password) || empty($user_name)) {
-            $_SESSION['error'] = "Semua field wajib diisi";
-        } elseif (strlen($password) < 6) {
-            $_SESSION['error'] = "Password minimal 6 karakter";
-        } elseif ($this->userModel->usernameExists($username)) {
-            $_SESSION['error'] = "Username sudah ada";
-        } else {
-            if ($this->userModel->register($username, $password, $user_name, 'general_user')) {
-                $_SESSION['success'] = "General User berhasil dibuat!";
-            } else {
-                $_SESSION['error'] = "Gagal membuat user";
-            }
+        if (empty($username) || empty($password) || empty($role)) {
+            header('Location: ?url=users/create&error=empty');
+            exit;
+        } 
+        
+        if (strlen($password) < 6) {
+            header('Location: ?url=users/create&error=password_short');
+            exit;
+        } 
+        
+        if ($this->userModel->usernameExists($username)) {
+            header('Location: ?url=users/create&error=duplicate');
+            exit;
         }
         
-        header('Location: ?url=users');
+        if ($this->userModel->createUser($username, $password, $role)) {
+            header('Location: ?url=users&success=1');
+        } else {
+            header('Location: ?url=users/create&error=1');
+        }
         exit;
     }
+    
     
 }
 ?>
