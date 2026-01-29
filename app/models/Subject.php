@@ -121,7 +121,6 @@ class Subject {
         return $stmt->execute();
     }
     
-    
     public function delete($id_share) {
         $sql = "DELETE FROM subject WHERE id_share = ?";
         $stmt = $this->conn->prepare($sql);
@@ -146,6 +145,108 @@ class Subject {
         $result = $stmt->get_result()->fetch_assoc();
         return $result['total'] > 0;
     }
-    
+
+    public function countAll($filters = []) {
+        $sql = "SELECT COUNT(*) as total FROM subject WHERE 1=1";
+        $params = [];
+        $types = "";
+        
+        // Apply filters (same as getAll method)
+        if (!empty($filters['search'])) {
+            $sql .= " AND (name_subject LIKE ? OR id_share LIKE ?)";
+            $searchTerm = "%" . $filters['search'] . "%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $types .= "ss";
+        }
+        
+        if (!empty($filters['type'])) {
+            $sql .= " AND type_subject = ?";
+            $params[] = $filters['type'];
+            $types .= "s";
+        }
+        
+        if (!empty($filters['status'])) {
+            $sql .= " AND status = ?";
+            $params[] = $filters['status'];
+            $types .= "s";
+        }
+        
+        if (!empty($filters['division'])) {
+            $sql .= " AND division = ?";
+            $params[] = $filters['division'];
+            $types .= "s";
+        }
+        
+        $stmt = $this->conn->prepare($sql);
+        
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        
+        return (int)$row['total'];
+    }
+
+    public function getUniqueDivisions() {
+        $sql = "SELECT DISTINCT division FROM subject 
+                WHERE division IS NOT NULL AND division != '' 
+                ORDER BY division ASC";
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getAllPaginated($filters = [], $offset = 0, $limit = 50) {
+        $sql = "SELECT s.*, g.name_grade, g.default_allowance as grade_allowance 
+                FROM subject s 
+                LEFT JOIN grade_employee g ON s.id_grade = g.id_grade 
+                WHERE 1=1";
+        
+        $params = [];
+        $types = "";
+        
+        // Apply filters (sama seperti method countAll)
+        if (!empty($filters['search'])) {
+            $sql .= " AND (s.name_subject LIKE ? OR s.id_share LIKE ?)";
+            $searchTerm = "%" . $filters['search'] . "%";
+            $params[] = $searchTerm;
+            $params[] = $searchTerm;
+            $types .= "ss";
+        }
+        
+        if (!empty($filters['type'])) {
+            $sql .= " AND s.type_subject = ?";
+            $params[] = $filters['type'];
+            $types .= "s";
+        }
+        
+        if (!empty($filters['status'])) {
+            $sql .= " AND s.status = ?";
+            $params[] = $filters['status'];
+            $types .= "s";
+        }
+        
+        if (!empty($filters['division'])) {
+            $sql .= " AND s.division = ?";
+            $params[] = $filters['division'];
+            $types .= "s";
+        }
+        
+        $sql .= " ORDER BY s.name_subject ASC LIMIT ? OFFSET ?";
+        $params[] = (int)$limit;
+        $params[] = (int)$offset;
+        $types .= "ii";
+        
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
 }
 ?> 

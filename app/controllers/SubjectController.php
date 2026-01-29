@@ -1,6 +1,7 @@
 <?php
 require_once '../app/models/Subject.php';
 require_once '../app/middleware/AuthMiddleware.php';
+require_once '../app/helpers/functions.php';
 
 class SubjectController {
     private $subjectModel;
@@ -13,32 +14,42 @@ class SubjectController {
     }
     
     public function index() {
-        // 1. Kumpulkan filter dari URL
+        // 1. Auth check (Gunakan AuthMiddleware yang sudah ada saja)
+        AuthMiddleware::checkAdmin();
+        
+        // 2. Get filters
         $filters = [
             'search'   => $_GET['search'] ?? '',
             'type'     => $_GET['type'] ?? '',
             'status'   => $_GET['status'] ?? '',
-            'division' => $_GET['division'] ?? '',
+            'division' => $_GET['division'] ?? ''
         ];
     
-        // 2. Logic hasFilters (Harus sebelum include)
-        // Cek apakah ada salah satu nilai di array $filters yang tidak kosong
-        $hasFilters = !empty($filters['search']) || 
-                      !empty($filters['type']) || 
-                      !empty($filters['status']) || 
-                      !empty($filters['division']);
+        $hasFilters = !empty($filters['search']) || !empty($filters['type']) || 
+                      !empty($filters['status']) || !empty($filters['division']);
     
-        // 3. Ambil data dari model
-        $subjects = $this->subjectModel->getAll($filters);
-    
-        // 4. Ambil daftar divisi untuk dropdown
-        $sql = "SELECT DISTINCT division FROM subject WHERE division IS NOT NULL AND division != '' ORDER BY division ASC";
-        $result = $this->db->query($sql);
-        $divisions = $result->fetch_all(MYSQLI_ASSOC);
-    
-        // 5. Panggil view (Sekarang $hasFilters sudah siap dipakai di dalam view)
+        // 3. Pagination setup
+        $perPage = 1;
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        if ($currentPage < 1) $currentPage = 1;
+        
+        $offset = ($currentPage - 1) * $perPage;
+        
+        // 4. Get data (Panggil method dari Model)
+        $totalRecords = $this->subjectModel->countAll($filters);
+        
+        // Pastikan fungsi getPagination() tersedia di functions.php
+        $pagination = getPagination($totalRecords, $currentPage, $perPage);
+        
+        // Ambil data yang sudah dipagination
+        $subjects = $this->subjectModel->getAllPaginated($filters, $pagination['offset'], $pagination['limit']);
+        
+        // Error tadi karena ini: harusnya panggil dari model
+        $divisions = $this->subjectModel->getUniqueDivisions();
+        
+        // 5. Load view
         include '../app/views/subjects/index.php';
-    }
+    }    
     
     public function create() {
         require_once '../app/models/Grade.php';
@@ -129,5 +140,26 @@ class SubjectController {
         }
         exit;
     }
+
+    public function getUniqueDivisions() {
+        $sql = "SELECT DISTINCT division 
+                FROM subject 
+                WHERE division IS NOT NULL 
+                AND division != '' 
+                ORDER BY division ASC";
+        
+        $result = $this->db->query($sql);
+        
+        if (!$result) {
+            return [];
+        }
+        
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    
+
+    
 }
+
+
 ?>

@@ -18,12 +18,12 @@ $searchContent = ob_get_clean();
 ob_start(); ?>
     <?php 
         $label = 'Kategori'; $name = 'type'; 
-        $options = ['karyawan' => 'Karyawan', 'non_karyawan' => 'Internal'];
+        $options = ['karyawan' => 'Karyawan', 'non_karyawan' => 'Non-Karyawan'];
         include '../app/views/components/filter-dropdown.php'; 
     ?>
     <?php 
         $label = 'Status'; $name = 'status'; 
-        $options = ['aktif' => 'Aktif', 'non_aktif' => 'Off'];
+        $options = ['aktif' => 'Aktif', 'non_aktif' => 'Non-Aktif'];
         include '../app/views/components/filter-dropdown.php'; 
     ?>
     <?php 
@@ -114,7 +114,7 @@ $filterContent = ob_get_clean();
                     </td>
                     
                     <!-- Divisi -->
-                    <td class="py-4 px-5 text-gray-700 font-medium"><?= htmlspecialchars($subject['division'] ?: '-') ?></td>
+                    <td class="py-4 px-5 text-gray-700 font-medium uppercase"><?= htmlspecialchars($subject['division'] ?: '-') ?></td>
                     
                     <!-- Status -->
                     <td class="py-4 px-5 text-center">
@@ -164,6 +164,23 @@ $filterContent = ob_get_clean();
         </tbody>
     </table>
 </div>
+
+<?php 
+if (isset($pagination) && $pagination['totalPages'] > 1):
+    $baseUrl = '?url=subjects';
+    $params = array_filter([
+        'search' => $_GET['search'] ?? '',
+        'type' => $_GET['type'] ?? '',
+        'status' => $_GET['status'] ?? '',
+        'division' => $_GET['division'] ?? ''
+    ]);
+
+    $currentPage = $pagination['currentPage'];
+    $totalPages = $pagination['totalPages'];
+
+    include '../app/views/components/pagination.php'; 
+endif;
+?>
 
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closeDeleteModal()">

@@ -16,9 +16,9 @@ $hasFilters = $hasFilters ?? false;
         <input type="hidden" name="url" value="<?= htmlspecialchars($_GET['url']) ?>">
     <?php endif; ?>
     
-    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-[#1F4396] flex items-center gap-2 uppercase tracking-tight">
+    <div class="bg-white rounded-md shadow-md border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-[#1F4396] flex items-center gap-2 uppercase tracking-tight">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                 </svg>
