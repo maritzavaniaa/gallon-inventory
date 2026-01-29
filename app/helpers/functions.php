@@ -54,7 +54,7 @@ function e($string) {
 function getPagination($totalRecords, $currentPage = 1, $perPage = 50) {
     $currentPage = max(1, (int)$currentPage);
     $totalPages = ceil($totalRecords / $perPage);
-    $currentPage = min($currentPage, max(1, $totalPages)); // Prevent exceeding max page
+    $currentPage = min($currentPage, max(1, $totalPages));
     $offset = ($currentPage - 1) * $perPage;
     
     return [

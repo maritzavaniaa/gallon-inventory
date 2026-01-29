@@ -32,6 +32,11 @@ ob_start(); ?>
         foreach ($divisions as $div) { $options[$div['division']] = $div['division']; }
         include '../app/views/components/filter-dropdown.php'; 
     ?>
+    <?php 
+        $label = 'Tampilkan'; $name = 'per_page'; 
+        $options = ['10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'];
+        include '../app/views/components/filter-dropdown.php'; 
+    ?>
 <?php 
 $filterContent = ob_get_clean(); 
 ?>
@@ -172,7 +177,8 @@ if (isset($pagination) && $pagination['totalPages'] > 1):
         'search' => $_GET['search'] ?? '',
         'type' => $_GET['type'] ?? '',
         'status' => $_GET['status'] ?? '',
-        'division' => $_GET['division'] ?? ''
+        'division' => $_GET['division'] ?? '',
+        'per_page' => $_GET['per_page'] ?? '' 
     ]);
 
     $currentPage = $pagination['currentPage'];

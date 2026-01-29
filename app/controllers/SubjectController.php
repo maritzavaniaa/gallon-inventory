@@ -1,55 +1,54 @@
 <?php
+require_once 'Controller.php';
 require_once '../app/models/Subject.php';
 require_once '../app/middleware/AuthMiddleware.php';
 require_once '../app/helpers/functions.php';
 
-class SubjectController {
+class SubjectController extends Controller{
     private $subjectModel;
-    private $db;
     
     public function __construct($db) {
+        // 3. Panggil constructor bapaknya agar $this->db terisi
+        parent::__construct($db); 
+        
         AuthMiddleware::checkAdmin();
-        $this->db = $db;
         $this->subjectModel = new Subject($db);
     }
     
     public function index() {
-        // 1. Auth check (Gunakan AuthMiddleware yang sudah ada saja)
         AuthMiddleware::checkAdmin();
-        
-        // 2. Get filters
+    
+        // 1. Ambil LIMIT dari dropdown URL (lewat fungsi Bapaknya)
+        $perPage = $this->getLimit(50); 
+    
+        // 2. Siapkan filter
         $filters = [
             'search'   => $_GET['search'] ?? '',
             'type'     => $_GET['type'] ?? '',
             'status'   => $_GET['status'] ?? '',
-            'division' => $_GET['division'] ?? ''
+            'division' => $_GET['division'] ?? '',
         ];
     
-        $hasFilters = !empty($filters['search']) || !empty($filters['type']) || 
-                      !empty($filters['status']) || !empty($filters['division']);
-    
-        // 3. Pagination setup
-        $perPage = 1;
-        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        if ($currentPage < 1) $currentPage = 1;
-        
-        $offset = ($currentPage - 1) * $perPage;
-        
-        // 4. Get data (Panggil method dari Model)
+        // 3. Pagination Logic
         $totalRecords = $this->subjectModel->countAll($filters);
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         
-        // Pastikan fungsi getPagination() tersedia di functions.php
+        // PENTING: Kirim $perPage ke sini!
         $pagination = getPagination($totalRecords, $currentPage, $perPage);
         
-        // Ambil data yang sudah dipagination
-        $subjects = $this->subjectModel->getAllPaginated($filters, $pagination['offset'], $pagination['limit']);
-        
-        // Error tadi karena ini: harusnya panggil dari model
+        // 4. Ambil data dengan LIMIT dan OFFSET yang sudah dihitung
+        // Gunakan $pagination['limit'] karena isinya sudah pasti angka dari $perPage
+        $subjects = $this->subjectModel->getAllPaginated(
+            $filters, 
+            $pagination['offset'], 
+            $pagination['limit']
+        );
+    
         $divisions = $this->subjectModel->getUniqueDivisions();
+        $stats = $this->subjectModel->getStats();
         
-        // 5. Load view
         include '../app/views/subjects/index.php';
-    }    
+    }  
     
     public function create() {
         require_once '../app/models/Grade.php';

@@ -248,5 +248,15 @@ class Subject {
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function getStats() {
+        $sql = "SELECT 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN status = 'aktif' THEN 1 ELSE 0 END) as aktif,
+                    SUM(CASE WHEN status = 'non_aktif' THEN 1 ELSE 0 END) as off
+                FROM subject";
+        $result = $this->conn->query($sql);
+        return $result->fetch_assoc();
+    }
 }
 ?> 
