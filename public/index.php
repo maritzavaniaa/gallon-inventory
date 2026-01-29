@@ -99,17 +99,17 @@ switch ($url) {
         $controller->create();
         break;
 
-    // case 'transactions':
-    //     require_once '../app/controllers/TransactionController.php';
-    //     $controller = new TransactionController($db);
-    //     $controller->index();
-    //     break;
+    case 'transactions':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->index();
+        break;
         
-    // case 'reports':
-    //     require_once '../app/controllers/ReportController.php';
-    //     $controller = new ReportController($db);
-    //     $controller->index();
-    //     break;
+    case 'reports':
+        require_once '../app/controllers/ReportController.php';
+        $controller = new ReportController($db);
+        $controller->index();
+        break;
        
     default:
         // Dynamic routing untuk edit/update/delete dengan ID

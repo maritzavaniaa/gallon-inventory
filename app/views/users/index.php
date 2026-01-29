@@ -70,7 +70,7 @@ ob_start();
                     Dibuat
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md" style="width: 25%;">
-                    Aksi
+                    Kontrol Akses
                 </th>
             </tr>
         </thead>
@@ -116,12 +116,23 @@ ob_start();
                     
                     <!-- Status -->
                     <td class="py-3 px-5 text-center">
-                        <span class="inline-flex items-center gap-1.5 <?= $user['status'] == 'aktif' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200' ?> px-3 py-1.5 rounded-md border-2">
-                            <span class="text-xl">
-                                <?= $user['status'] == 'aktif' ? '✅' : '❌' ?>
-                            </span>
-                            <span class="<?= $user['status'] == 'aktif' ? 'text-green-900' : 'text-red-900' ?> font-semibold text-sm">
-                                <?= ucfirst($user['status']) ?>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border-2 transition-all 
+                            <?= $user['status'] == 'aktif' 
+                                ? 'bg-green-50 border-green-200 text-green-700' 
+                                : 'bg-red-50 border-red-200 text-red-700' ?>">
+                            
+                            <?php if ($user['status'] == 'aktif'): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            <?php endif; ?>
+
+                            <span class="font-bold text-sm uppercase tracking-wide">
+                                <?= $user['status'] ?>
                             </span>
                         </span>
                     </td>
@@ -139,19 +150,31 @@ ob_start();
                             <?php if ($user['id_user'] != $_SESSION['user_id']): ?>
                                 <button type="button"
                                         onclick="showPasswordModal(<?= $user['id_user'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>', '<?= $user['status'] ?>')"
-                                        class="inline-flex items-center gap-2 <?= $user['status'] == 'aktif' ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600' ?> text-white font-semibold text-sm px-3 py-1 rounded-md shadow-sm transition-all hover:shadow-lg"
-                                        style="min-height: 36px;">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <?php if ($user['status'] == 'aktif'): ?>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                        <?php else: ?>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        <?php endif; ?>
-                                    </svg>
-                                    <span><?= $user['status'] == 'aktif' ? 'Nonaktifkan' : 'Aktifkan' ?></span>
+                                        class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-sm border-2 
+                                        <?= $user['status'] == 'aktif' 
+                                            ? 'bg-white border-red-500 text-red-600 hover:bg-red-500 hover:text-white' 
+                                            : 'bg-white border-green-500 text-green-600 hover:bg-green-500 hover:text-white' ?>"
+                                        style="min-width: 140px; justify-content: center;">
+                                    
+                                    <?php if ($user['status'] == 'aktif'): ?>
+                                        <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                                        </svg>
+                                        <span>Nonaktifkan</span>
+                                    <?php else: ?>
+                                        <svg class="w-4 h-4 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5V6.75a4.5 4.5 0 119 0v3.75M3.75 21.75h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H3.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                        </svg>
+                                        <span>Aktifkan User</span>
+                                    <?php endif; ?>
                                 </button>
                             <?php else: ?>
-                                <span class="text-gray-400 text-sm font-medium">-</span>
+                                <div class="flex items-center gap-2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    <span class="text-xs font-semibold">Akun Anda</span>
+                                </div>
                             <?php endif; ?>
                         </div>
                     </td>
@@ -166,7 +189,6 @@ ob_start();
 <div id="passwordModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closePasswordModal()">
     <div class="bg-white rounded-md shadow-md p-10 max-w-lg w-full mx-4">
         <div class="text-center mb-6">
-            <div class="text-8xl mb-4" id="modalIcon">🔐</div>
             <h2 class="text-lg font-bold text-gray-900 mb-3">KONFIRMASI PASSWORD</h2>
             <p class="text-md text-gray-800 mb-4 leading-relaxed">
                 Masukkan password Anda untuk <strong id="modalAction">mengubah status</strong> user ini
@@ -192,12 +214,12 @@ ob_start();
                 <button type="submit" 
                         class="block text-white font-semibold text-md py-5 rounded-md text-center transition-all shadow-lg hover:opacity-90"
                         style="background: #1F4396;">
-                    ✔️ KONFIRMASI & UBAH STATUS
+                    KONFIRMASI & UBAH STATUS
                 </button>
                 <button type="button"
                         onclick="closePasswordModal()"
                         class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold text-md py-5 rounded-md transition-all">
-                    ✖️ BATAL
+                    BATAL
                 </button>
             </div>
         </form>
@@ -208,8 +230,7 @@ ob_start();
 function showPasswordModal(userId, username, currentStatus) {
     const newStatus = currentStatus === 'aktif' ? 'non_aktif' : 'aktif';
     const action = currentStatus === 'aktif' ? 'menonaktifkan' : 'mengaktifkan';
-    
-    document.getElementById('modalIcon').textContent = currentStatus === 'aktif' ? '🔒' : '✅';
+
     document.getElementById('modalAction').textContent = action;
     document.getElementById('modalUserName').textContent = 'Username: ' + username;
     document.getElementById('modalStatusInfo').textContent = 'Status saat ini: ' + (currentStatus === 'aktif' ? 'Aktif' : 'Non-aktif');
