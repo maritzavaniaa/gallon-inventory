@@ -55,22 +55,22 @@ ob_start();
         <thead>
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
                 <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 6%;">
-                    No
+                    NO
                 </th>
                 <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 24%;">
-                    Username
+                    USERNAME
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
-                    Role
+                    ROLE
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
-                    Status
+                    STATUS
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
-                    Dibuat
+                    DIBUAT
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md" style="width: 25%;">
-                    Kontrol Akses
+                    KONTROL AKSES
                 </th>
             </tr>
         </thead>
@@ -103,37 +103,36 @@ ob_start();
                     </td>
                     
                     <!-- Role -->
-                    <td class="py-3 px-5 flex items-center justify-center">
-                        <span class="inline-flex items-center gap-1.5 <?= $user['role'] == 'admin' ? 'bg-blue-50 border-blue-200' : 'bg-purple-50 border-purple-200' ?> px-3 py-1.5 rounded-md border-2">
-                            <svg class="w-4 h-4 <?= $user['role'] == 'admin' ? 'text-blue-600' : 'text-purple-600' ?>" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                            </svg>
-                            <span class="<?= $user['role'] == 'admin' ? 'text-blue-900' : 'text-purple-900' ?> font-semibold text-sm">
-                                <?= ucfirst($user['role']) ?>
-                            </span>
+                    <td class="py-3 px-5 text-center">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border-2
+                            <?= $user['role'] == 'admin' 
+                                ? 'bg-blue-100 text-blue-800 border-blue-200' 
+                                : 'bg-purple-100 text-purple-800 border-purple-200' ?>">
+                            
+                            <?php if ($user['role'] == 'admin'): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21a3.745 3.745 0 01-3.068-1.593 3.745 3.745 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.745 3.745 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+                                </svg>
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            <?php endif; ?>
+                            
+                            <?= strtoupper($user['role']) ?>
                         </span>
                     </td>
                     
                     <!-- Status -->
                     <td class="py-3 px-5 text-center">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border-2 transition-all 
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border-2 transition-all 
                             <?= $user['status'] == 'aktif' 
-                                ? 'bg-green-50 border-green-200 text-green-700' 
-                                : 'bg-red-50 border-red-200 text-red-700' ?>">
+                                ? 'bg-green-100 text-green-800 border-green-200' 
+                                : 'bg-red-100 text-red-800 border-red-200' ?>">
                             
-                            <?php if ($user['status'] == 'aktif'): ?>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            <?php else: ?>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            <?php endif; ?>
-
-                            <span class="font-bold text-sm uppercase tracking-wide">
-                                <?= $user['status'] ?>
-                            </span>
+                            <span class="w-2 h-2 rounded-full <?= $user['status'] == 'aktif' ? 'bg-green-500' : 'bg-red-500' ?>"></span>
+                            
+                            <?= strtoupper($user['status']) ?>
                         </span>
                     </td>
                     

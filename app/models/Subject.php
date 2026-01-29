@@ -6,13 +6,43 @@ class Subject {
         $this->conn = $db;
     }
     
-    public function getAll() {
-        $sql = "SELECT s.*, g.name_grade 
-                FROM subject s 
-                LEFT JOIN grade_employee g ON s.id_grade = g.id_grade 
-                ORDER BY s.name_subject";
-        $result = $this->conn->query($sql);
-        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    public function getAll($filters = []) {
+        // Gunakan JOIN yang benar sesuai nama tabelmu (subject & grade_employee)
+        $query = "SELECT s.*, g.name_grade 
+                  FROM subject s 
+                  LEFT JOIN grade_employee g ON s.id_grade = g.id_grade 
+                  WHERE 1=1";
+        
+        // 1. Filter Search (Nama atau ID)
+        if (!empty($filters['search'])) {
+            $s = $this->conn->real_escape_string($filters['search']);
+            $query .= " AND (s.name_subject LIKE '%$s%' OR s.id_share LIKE '%$s%')";
+        }
+        
+        // 2. Filter Tipe (karyawan/non_karyawan)
+        if (!empty($filters['type'])) {
+            $t = $this->conn->real_escape_string($filters['type']);
+            $query .= " AND s.type_subject = '$t'";
+        }
+        
+        // 3. Filter Status (aktif/non_aktif)
+        if (!empty($filters['status'])) {
+            $st = $this->conn->real_escape_string($filters['status']);
+            $query .= " AND s.status = '$st'";
+        }
+
+        // 4. Filter Division
+        if (!empty($filters['division'])) {
+            $d = $this->conn->real_escape_string($filters['division']);
+            $query .= " AND s.division = '$d'";
+        }
+    
+        $query .= " ORDER BY s.name_subject ASC";
+        
+        $result = $this->conn->query($query);
+        if (!$result) return []; // Kembalikan array kosong jika query gagal
+        
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
     
     public function create($data) {

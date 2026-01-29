@@ -50,23 +50,22 @@ ob_start();
 <?php endif; ?>
 
 <!-- Grades Table -->
-<!-- Grades Table -->
 <div class="bg-white rounded-md overflow-hidden border-2 border-gray-200">
     <table class="w-full">
         <!-- Table Header -->
         <thead>
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
                 <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 10%;">
-                    No
+                    NO
                 </th>
                 <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 35%;">
-                    Nama Grade
+                    NAMA GRADE
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 25%;">
-                    Kuota Galon/Bulan
+                    KUOTA GALLON / BULAN
                 </th>
                 <th class="py-3 px-5 text-center text-white font-semibold text-md" style="width: 30%;">
-                    Aksi
+                    AKSI
                 </th>
             </tr>
         </thead>
@@ -108,27 +107,25 @@ ob_start();
                     </td>
                     
                     <!-- Action Buttons -->
-                    <td class="py-3 px-5">
+                    <td class="py-4 px-5">
                         <div class="flex justify-center gap-2">
-                            <!-- Edit Button -->
                             <a href="?url=grades/edit/<?= $grade['id_grade'] ?>" 
-                               class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-sm px-3 py-1 rounded-md shadow-sm transition-all hover:shadow-lg"
-                               style="min-height: 36px;">
+                            class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-2 rounded shadow-sm transition-all"
+                            title="Edit Data">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
-                                <span>Edit</span>
+                                EDIT
                             </a>
                             
-                            <!-- Delete Button -->
                             <button type="button"
                                     onclick="confirmDelete(<?= $grade['id_grade'] ?>, '<?= htmlspecialchars($grade['name_grade'], ENT_QUOTES) ?>', <?= $grade['default_allowance'] ?>)"
-                                    class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm px-3 py-1 rounded-md shadow-sm transition-all hover:shadow-lg"
-                                    style="min-height: 36px;">
+                                    class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold text-xs px-3 py-2 rounded shadow-sm transition-all"
+                                    title="Hapus Data">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
-                                <span>Hapus</span>
+                                HAPUS
                             </button>
                         </div>
                     </td>

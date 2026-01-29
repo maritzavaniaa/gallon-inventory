@@ -13,8 +13,31 @@ class SubjectController {
     }
     
     public function index() {
-        $subjects = $this->subjectModel->getAll();
-        require_once '../app/views/subjects/index.php';
+        // 1. Kumpulkan filter dari URL
+        $filters = [
+            'search'   => $_GET['search'] ?? '',
+            'type'     => $_GET['type'] ?? '',
+            'status'   => $_GET['status'] ?? '',
+            'division' => $_GET['division'] ?? '',
+        ];
+    
+        // 2. Logic hasFilters (Harus sebelum include)
+        // Cek apakah ada salah satu nilai di array $filters yang tidak kosong
+        $hasFilters = !empty($filters['search']) || 
+                      !empty($filters['type']) || 
+                      !empty($filters['status']) || 
+                      !empty($filters['division']);
+    
+        // 3. Ambil data dari model
+        $subjects = $this->subjectModel->getAll($filters);
+    
+        // 4. Ambil daftar divisi untuk dropdown
+        $sql = "SELECT DISTINCT division FROM subject WHERE division IS NOT NULL AND division != '' ORDER BY division ASC";
+        $result = $this->db->query($sql);
+        $divisions = $result->fetch_all(MYSQLI_ASSOC);
+    
+        // 5. Panggil view (Sekarang $hasFilters sudah siap dipakai di dalam view)
+        include '../app/views/subjects/index.php';
     }
     
     public function create() {
