@@ -49,12 +49,19 @@ switch ($url) {
         $controller = new UserController($db);
         $controller->index();
         break;
+    
+    case 'users/create':
+        require_once '../app/controllers/UserController.php';
+        $controller = new UserController($db);
+        $controller->create();
+        break;
         
     case 'users/store':
-        require_once '../app/controllers/AuthController.php';
-        $controller = new AuthController($db);
-        $controller->storeUser();
+        require_once '../app/controllers/UserController.php';
+        $controller = new UserController($db);
+        $controller->store();
         break;
+        
         
     case 'subjects':
         require_once '../app/controllers/SubjectController.php';
@@ -141,6 +148,12 @@ switch ($url) {
             require_once '../app/controllers/SubjectController.php';
             $controller = new SubjectController($db);
             $controller->delete($id_share);
+
+        } elseif (strpos($url, 'users/toggle/') === 0) {
+            $id = (int)str_replace('users/toggle/', '', $url);
+            require_once '../app/controllers/UserController.php';
+            $controller = new UserController($db);
+            $controller->toggleStatus($id);            
             
         } else {
             // Dashboard
