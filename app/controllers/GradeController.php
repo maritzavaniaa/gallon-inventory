@@ -1,19 +1,24 @@
 <?php
+require_once 'Controller.php';
 require_once '../app/models/Grade.php';
 require_once '../app/middleware/AuthMiddleware.php';
+require_once '../app/helpers/functions.php';
 
-class GradeController {
+class GradeController extends Controller{
     private $gradeModel;
-    private $db;
 
     public function __construct($db) {
+        parent::__construct($db);
         AuthMiddleware::checkAdmin();
-        $this->db = $db;
         $this->gradeModel = new Grade($db);
     }
 
     public function index() {
-        $grades = $this->gradeModel->getAll();
+        $filters = [
+            'search' => $_GET['search'] ?? ''
+        ];
+
+        $grades = $this->gradeModel->getAll($filters);
         require_once '../app/views/grades/index.php';
     }
     

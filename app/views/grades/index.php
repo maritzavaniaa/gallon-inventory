@@ -24,6 +24,24 @@ ob_start();
     </div>
 </div>
 
+<?php
+// 1. Tentukan apakah ada filter aktif (untuk tombol Bersihkan)
+$hasFilters = !empty($_GET['search']);
+
+// 2. Siapkan konten Search Bar
+ob_start();
+    $label = 'Cari Grade';
+    $placeholder = 'Masukkan nama grade...';
+    include '../app/views/components/search-bar.php';
+$searchContent = ob_get_clean();
+
+// 3. Konten Filter (Kosongkan saja karena Grade cuma butuh Search)
+$filterContent = ''; 
+
+// 4. Render Container
+include '../app/views/components/filter-container.php';
+?>
+
 <!-- Alert Messages -->
 <?php if (isset($_GET['success'])): ?>
 <div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
@@ -55,16 +73,16 @@ ob_start();
         <!-- Table Header -->
         <thead>
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
-                <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 10%;">
+                <th class="py-4 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 10%;">
                     NO
                 </th>
-                <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 35%;">
+                <th class="py-4 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 35%;">
                     NAMA GRADE
                 </th>
-                <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 25%;">
+                <th class="py-4 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 25%;">
                     KUOTA GALLON / BULAN
                 </th>
-                <th class="py-3 px-5 text-center text-white font-semibold text-md" style="width: 30%;">
+                <th class="py-4 px-5 text-center text-white font-semibold text-md" style="width: 30%;">
                     AKSI
                 </th>
             </tr>
@@ -75,7 +93,6 @@ ob_start();
             <?php if (empty($grades)): ?>
                 <tr>
                     <td colspan="4" class="py-16 text-center">
-                        <div class="text-gray-400 text-7xl mb-4">📋</div>
                         <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data Grade</p>
                         <p class="text-gray-500 text-lg">Klik tombol "Tambah Grade Baru" untuk memulai</p>
                     </td>
@@ -97,7 +114,7 @@ ob_start();
                     
                     <!-- Kuota -->
                     <td class="py-3 px-5 flex items-center justify-center">
-                        <div class="inline-flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-md border-2 border-blue-200">
+                        <div class="inline-flex items-center gap-1.5 bg-blue-50 px-2.5 py-1 rounded-md border-2 border-blue-200">
                             <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd" />
                             </svg>
@@ -110,7 +127,7 @@ ob_start();
                     <td class="py-4 px-5">
                         <div class="flex justify-center gap-2">
                             <a href="?url=grades/edit/<?= $grade['id_grade'] ?>" 
-                            class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-2 rounded shadow-sm transition-all"
+                            class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all"
                             title="Edit Data">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -120,7 +137,7 @@ ob_start();
                             
                             <button type="button"
                                     onclick="confirmDelete(<?= $grade['id_grade'] ?>, '<?= htmlspecialchars($grade['name_grade'], ENT_QUOTES) ?>', <?= $grade['default_allowance'] ?>)"
-                                    class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold text-xs px-3 py-2 rounded shadow-sm transition-all"
+                                    class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all"
                                     title="Hapus Data">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

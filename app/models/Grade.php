@@ -6,10 +6,26 @@ class Grade {
         $this->conn = $db;
     }
     
-    public function getAll() {
-        $sql = "SELECT * FROM grade_employee ORDER BY name_grade";
-        $result = $this->conn->query($sql);
-        return $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    public function getAll($filters = []) {
+        $sql = "SELECT * FROM grade_employee WHERE 1=1";
+        $params = [];
+        $types = "";
+    
+        if (!empty($filters['search'])) {
+            $sql .= " AND name_grade LIKE ?";
+            $params[] = "%" . $filters['search'] . "%";
+            $types .= "s";
+        }
+    
+        $sql .= " ORDER BY name_grade ASC";
+        
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
     
     public function create($name_grade, $default_allowance) {
