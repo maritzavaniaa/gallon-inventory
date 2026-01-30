@@ -22,6 +22,36 @@ ob_start();
     </div>
 </div>
 
+<?php
+// 1. Cek apakah ada filter aktif
+$hasFilters = !empty($_GET['search']) || !empty($_GET['role']) || !empty($_GET['status']);
+
+// 2. Siapkan konten Search Bar
+ob_start();
+    $label = 'Cari User';
+    $placeholder = 'Cari berdasarkan username...';
+    include '../app/views/components/search-bar.php';
+$searchContent = ob_get_clean();
+
+// 3. Siapkan konten Filter Dropdown
+ob_start();
+    // Dropdown Role
+    $label = 'Hak Akses';
+    $name = 'role';
+    $options = ['admin' => 'Administrator', 'general_user' => 'General User'];
+    include '../app/views/components/filter-dropdown.php';
+
+    // Dropdown Status
+    $label = 'Status Akun';
+    $name = 'status';
+    $options = ['aktif' => 'Aktif', 'non_aktif' => 'Non-aktif'];
+    include '../app/views/components/filter-dropdown.php';
+$filterContent = ob_get_clean();
+
+// 4. Render Container
+include '../app/views/components/filter-container.php';
+?>
+
 <!-- Alert Messages -->
 <?php if (isset($_GET['success'])): ?>
 <div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
@@ -54,22 +84,22 @@ ob_start();
     <table class="w-full">
         <thead>
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
-                <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 6%;">
+                <th class="py-4 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 6%;">
                     NO
                 </th>
-                <th class="py-3 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 24%;">
+                <th class="py-4 px-5 text-left text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 24%;">
                     USERNAME
                 </th>
-                <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
+                <th class="py-4 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
                     ROLE
                 </th>
-                <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
+                <th class="py-4 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
                     STATUS
                 </th>
-                <th class="py-3 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
+                <th class="py-4 px-5 text-center text-white font-semibold text-md border-r border-white border-opacity-20" style="width: 15%;">
                     DIBUAT
                 </th>
-                <th class="py-3 px-5 text-center text-white font-semibold text-md" style="width: 25%;">
+                <th class="py-4 px-5 text-center text-white font-semibold text-md" style="width: 25%;">
                     KONTROL AKSES
                 </th>
             </tr>
@@ -79,7 +109,6 @@ ob_start();
             <?php if (empty($users)): ?>
                 <tr>
                     <td colspan="6" class="py-16 text-center">
-                        <div class="text-gray-400 text-7xl mb-4">👥</div>
                         <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data User</p>
                         <p class="text-gray-500 text-lg">Klik tombol "Tambah User Baru" untuk memulai</p>
                     </td>
@@ -88,13 +117,13 @@ ob_start();
                 <?php foreach ($users as $index => $user): ?>
                 <tr class="border-b-2 border-gray-100 hover:bg-blue-50 transition-colors <?= $user['status'] == 'non_aktif' ? 'bg-red-50' : '' ?>">
                     <!-- Nomor -->
-                    <td class="py-3 px-5 text-gray-900 font-semibold text-base">
+                    <td class="py-3 px-5 text-gray-900 font-semibold text-sm">
                         <?= $index + 1 ?>
                     </td>
                     
                     <!-- Username -->
                     <td class="py-3 px-5">
-                        <span class="text-gray-900 font-semibold text-base">
+                        <span class="text-gray-900 font-semibold text-sm">
                             <?= htmlspecialchars($user['username']) ?>
                         </span>
                         <?php if ($user['id_user'] == $_SESSION['user_id']): ?>
@@ -149,7 +178,7 @@ ob_start();
                             <?php if ($user['id_user'] != $_SESSION['user_id']): ?>
                                 <button type="button"
                                         onclick="showPasswordModal(<?= $user['id_user'] ?>, '<?= htmlspecialchars($user['username'], ENT_QUOTES) ?>', '<?= $user['status'] ?>')"
-                                        class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-sm border-2 
+                                        class="group inline-flex items-center gap-2 px-4 py-1.5 rounded-md font-bold text-xs uppercase tracking-wider transition-all shadow-sm border-2 
                                         <?= $user['status'] == 'aktif' 
                                             ? 'bg-white border-red-500 text-red-600 hover:bg-red-500 hover:text-white' 
                                             : 'bg-white border-green-500 text-green-600 hover:bg-green-500 hover:text-white' ?>"

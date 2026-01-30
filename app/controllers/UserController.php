@@ -1,17 +1,27 @@
 <?php
+require_once 'Controller.php';
 require_once '../app/middleware/AuthMiddleware.php';
 require_once '../app/models/User.php';
+require_once '../app/helpers/functions.php';
 
-class UserController {
+class UserController extends Controller {
     private $userModel;
     
     public function __construct($db) {
+        parent::__construct($db);
         AuthMiddleware::checkAdmin();
         $this->userModel = new User($db);
     }
     
     public function index() {
-        $users = $this->userModel->getAllUsers();
+        // Tangkap semua filter dari URL
+        $filters = [
+            'search' => $_GET['search'] ?? '',
+            'role'   => $_GET['role'] ?? '',
+            'status' => $_GET['status'] ?? ''
+        ];
+
+        $users = $this->userModel->getAllUsers($filters);
         require_once '../app/views/users/index.php';
     }
     

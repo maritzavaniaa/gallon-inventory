@@ -7,17 +7,46 @@ class User {
     }
     
     // Get all users
-    public function getAllUsers() {
-        $sql = "SELECT * FROM app_user ORDER BY created_at DESC";
-        $result = $this->db->query($sql);
+    public function getAllUsers($filters = []) {
+        $sql = "SELECT * FROM app_user WHERE 1=1";
+        $params = [];
+        $types = "";
+    
+        // Search by username
+        if (!empty($filters['search'])) {
+            $sql .= " AND username LIKE ?";
+            $params[] = "%" . $filters['search'] . "%";
+            $types .= "s";
+        }
+    
+        // Filter by Role (admin/operator)
+        if (!empty($filters['role'])) {
+            $sql .= " AND role = ?";
+            $params[] = $filters['role'];
+            $types .= "s";
+        }
+    
+        // Filter by Status (1 = aktif, 0 = non_aktif)
+        if (isset($filters['status']) && $filters['status'] !== '') {
+            $sql .= " AND is_active = ?";
+            $params[] = ($filters['status'] === 'aktif') ? 1 : 0;
+            $types .= "i";
+        }
+    
+        $sql .= " ORDER BY created_at DESC";
+        
+        $stmt = $this->db->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        
+        $stmt->execute();
+        $result = $stmt->get_result();
         $users = [];
         
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                // Convert is_active (1/0) to status (aktif/non_aktif) for view
-                $row['status'] = ($row['is_active'] == 1) ? 'aktif' : 'non_aktif';
-                $users[] = $row;
-            }
+        while($row = $result->fetch_assoc()) {
+            $row['status'] = ($row['is_active'] == 1) ? 'aktif' : 'non_aktif';
+            $users[] = $row;
         }
         
         return $users;

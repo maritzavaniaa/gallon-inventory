@@ -93,7 +93,6 @@ include '../app/views/components/filter-container.php';
             <?php if (empty($grades)): ?>
                 <tr>
                     <td colspan="4" class="py-16 text-center">
-                        <div class="text-gray-400 text-7xl mb-4">📋</div>
                         <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data Grade</p>
                         <p class="text-gray-500 text-lg">Klik tombol "Tambah Grade Baru" untuk memulai</p>
                     </td>
