@@ -1,21 +1,54 @@
 <?php
+require_once 'Controller.php';
 require_once '../app/models/Subject.php';
 require_once '../app/middleware/AuthMiddleware.php';
+require_once '../app/helpers/functions.php';
 
-class SubjectController {
+class SubjectController extends Controller{
     private $subjectModel;
-    private $db;
     
     public function __construct($db) {
+        // 3. Panggil constructor bapaknya agar $this->db terisi
+        parent::__construct($db); 
+        
         AuthMiddleware::checkAdmin();
-        $this->db = $db;
         $this->subjectModel = new Subject($db);
     }
     
     public function index() {
-        $subjects = $this->subjectModel->getAll();
-        require_once '../app/views/subjects/index.php';
-    }
+        AuthMiddleware::checkAdmin();
+    
+        // 1. Ambil LIMIT dari dropdown URL (lewat fungsi Bapaknya)
+        $perPage = $this->getLimit(50); 
+    
+        // 2. Siapkan filter
+        $filters = [
+            'search'   => $_GET['search'] ?? '',
+            'type'     => $_GET['type'] ?? '',
+            'status'   => $_GET['status'] ?? '',
+            'division' => $_GET['division'] ?? '',
+        ];
+    
+        // 3. Pagination Logic
+        $totalRecords = $this->subjectModel->countAll($filters);
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        
+        // PENTING: Kirim $perPage ke sini!
+        $pagination = getPagination($totalRecords, $currentPage, $perPage);
+        
+        // 4. Ambil data dengan LIMIT dan OFFSET yang sudah dihitung
+        // Gunakan $pagination['limit'] karena isinya sudah pasti angka dari $perPage
+        $subjects = $this->subjectModel->getAllPaginated(
+            $filters, 
+            $pagination['offset'], 
+            $pagination['limit']
+        );
+    
+        $divisions = $this->subjectModel->getUniqueDivisions();
+        $stats = $this->subjectModel->getStats();
+        
+        include '../app/views/subjects/index.php';
+    }  
     
     public function create() {
         require_once '../app/models/Grade.php';
@@ -106,5 +139,26 @@ class SubjectController {
         }
         exit;
     }
+
+    public function getUniqueDivisions() {
+        $sql = "SELECT DISTINCT division 
+                FROM subject 
+                WHERE division IS NOT NULL 
+                AND division != '' 
+                ORDER BY division ASC";
+        
+        $result = $this->db->query($sql);
+        
+        if (!$result) {
+            return [];
+        }
+        
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    
+
+    
 }
+
+
 ?>
