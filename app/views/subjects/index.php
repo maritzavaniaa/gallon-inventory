@@ -86,12 +86,12 @@ $filterContent = ob_get_clean();
     <table class="w-full text-base">
         <thead>
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
-                <th class="py-3 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 12%;">ID SHARE</th>
-                <th class="py-3 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 23%;">NAMA</th>
-                <th class="py-3 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">DIVISI</th>
-                <th class="py-3 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">STATUS</th>
-                <th class="py-3 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">GRADE/KUOTA</th>
-                <th class="py-3 px-5 text-center text-white font-semibold" style="width: 20%;">AKSI</th>
+                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 12%;">ID SHARE</th>
+                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 23%;">NAMA</th>
+                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">DIVISI</th>
+                <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">STATUS</th>
+                <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">GRADE/KUOTA</th>
+                <th class="py-4 px-5 text-center text-white font-semibold" style="width: 20%;">AKSI</th>
             </tr>
         </thead>
         <tbody>
@@ -105,24 +105,27 @@ $filterContent = ob_get_clean();
                     <td class="py-4 px-5 font-mono font-bold text-blue-800 text-sm"><?= htmlspecialchars($subject['id_share']) ?></td>
                     
                     <!-- Nama Penerima & Tipe -->
-                    <td class="py-4 px-5">
-                        <div class="font-bold text-gray-900 mb-1"><?= htmlspecialchars($subject['name_subject']) ?></div>
-                        <?php if ($subject['type_subject'] == 'karyawan'): ?>
-                            <span class="px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-600 border border-blue-200">
-                                Karyawan
-                            </span>
-                        <?php else: ?>
-                            <span class="px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-600 border border-purple-200">
-                                Non-Karyawan
-                            </span>
-                        <?php endif; ?>
+                    <td class="py-3 px-5">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-gray-900"><?= htmlspecialchars($subject['name_subject']) ?></span>
+                            
+                            <?php if ($subject['type_subject'] == 'karyawan'): ?>
+                                <span class="inline-flex items-center px-1.5 py-0.3 rounded text-xs font-medium uppercase tracking-wider bg-blue-100 text-blue-500 border border-blue-100">
+                                    Staff
+                                </span>
+                            <?php else: ?>
+                                <span class="inline-flex items-center px-1.5 py-0.3 rounded text-xs font-medium uppercase tracking-wider bg-purple-100 text-purple-500 border border-purple-100">
+                                    Non
+                                </span>
+                            <?php endif; ?>
+                        </div>
                     </td>
                     
                     <!-- Divisi -->
-                    <td class="py-4 px-5 text-gray-700 font-medium uppercase"><?= htmlspecialchars($subject['division'] ?: '-') ?></td>
+                    <td class="py-3 px-5 text-gray-700 text-sm font-medium uppercase"><?= htmlspecialchars($subject['division'] ?: '-') ?></td>
                     
                     <!-- Status -->
-                    <td class="py-4 px-5 text-center">
+                    <td class="py-3 px-5 text-center">
                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border-2
                             <?= $subject['status'] == 'aktif' 
                                 ? 'bg-green-100 text-green-800 border-green-200' 
@@ -132,7 +135,7 @@ $filterContent = ob_get_clean();
                     </td>
 
                     <!-- Monthly Allowance / Grade -->
-                    <td class="py-4 px-5 text-center">
+                    <td class="py-3 px-5 text-center">
                         <?php if ($subject['type_subject'] == 'karyawan'): ?>
                             <div class="inline-block bg-blue-50 text-blue-700 px-3 py-1 rounded border-2 border-blue-200 font-bold text-xs uppercase">
                                 <?= htmlspecialchars($subject['name_grade'] ?: 'No Grade') ?>
@@ -143,10 +146,10 @@ $filterContent = ob_get_clean();
                     </td>
 
                     <!-- Action Buttons -->
-                    <td class="py-4 px-5">
+                    <td class="py-3 px-5">
                         <div class="flex justify-center gap-2">
                             <a href="?url=subjects/edit/<?= $subject['id_share'] ?>" 
-                               class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-2 rounded shadow-sm transition-all">
+                               class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
@@ -155,7 +158,7 @@ $filterContent = ob_get_clean();
 
                             <button type="button"
                                     onclick="confirmDelete('<?= $subject['id_share'] ?>', '<?= htmlspecialchars($subject['name_subject'], ENT_QUOTES) ?>')"
-                                    class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold text-xs px-3 py-2 rounded shadow-sm transition-all">
+                                    class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
