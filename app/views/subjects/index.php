@@ -36,6 +36,8 @@ ob_start(); ?>
         $label = 'Tampilkan'; $name = 'per_page'; 
         $options = ['10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'];
         include '../app/views/components/filter-dropdown.php'; 
+        // '1' => '1 Baris', '2' => '2 Baris', '3' => '3 Baris'
+        // '10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'
     ?>
 <?php 
 $filterContent = ob_get_clean(); 

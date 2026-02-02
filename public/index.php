@@ -110,6 +110,10 @@ switch ($url) {
         $controller = new ReportController($db);
         $controller->index();
         break;
+
+    case 'test-tsx':
+        require_once 'test-tsx.php';  // ← Nama file kamu
+        break;
        
     default:
         // Dynamic routing untuk edit/update/delete dengan ID
