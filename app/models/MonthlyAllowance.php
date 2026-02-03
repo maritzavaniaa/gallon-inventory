@@ -198,5 +198,45 @@ class MonthlyAllowance {
         $stmt->bind_param("s", $allowance_month);
         return $stmt->execute();
     }
+
+    /**
+     * Search subjects and their current quota (FR-TSX-01)
+     * Digunakan untuk live search di form transaksi OUT
+     */
+    public function searchWithQuota($keyword, $allowance_month = null) {
+        $allowance_month = $allowance_month ?: date('Y-m-01');
+        $searchTerm = "%" . trim($keyword) . "%";
+    
+        // Mencari orangnya dulu di tabel subject
+        $sql = "SELECT id_share, name_subject, division 
+                FROM subject 
+                WHERE (id_share LIKE ? OR name_subject LIKE ?) 
+                AND status = 'aktif'";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $searchTerm, $searchTerm);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            // DI SINI KITA AMBIL KUOTA ASLINYA (10, 13, dsb)
+            $info = $this->getSubjectAllowance($row['id_share'], $allowance_month);
+            
+            $data[] = [
+                'id_share'  => $row['id_share'],
+                'name'      => $row['name_subject'],
+                'division'  => $row['division'],
+                'allowance' => $info['allowance'], // Ini jatah asli (misal: 13)
+                'used'      => $info['used'],      // Yang sudah dipakai
+                'remaining' => $info['remaining']  // Sisa yang boleh diambil
+            ];
+        }
+    
+        return [
+            'success' => !empty($data),
+            'data' => $data
+        ];
+    }
 }
 ?>

@@ -104,6 +104,24 @@ switch ($url) {
         $controller = new TransactionController($db);
         $controller->index();
         break;
+
+    case 'transactions/search':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->searchSubject();
+        break;
+
+    case 'transactions/store-out':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->storeOut();
+        break;
+
+    case 'transactions/store-in':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->storeIn();
+        break;
         
     case 'reports':
         require_once '../app/controllers/ReportController.php';

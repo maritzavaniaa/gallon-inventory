@@ -17,7 +17,7 @@ class Transaction {
         $quantity = (int)$data['quantity'];
         $tsxDate = $data['tsx_date'] ?? date('Y-m-d');
         $referenceDoc = $data['reference_doc'] ?? null;
-        $notes = $data['notes'] ?? null;
+        $notes = !empty($data['notes']) ? $data['notes'] : null;
 
         $recordedBy = $_SESSION['user_id'] ?? null;
         if (!$recordedBy) {
@@ -97,37 +97,33 @@ class Transaction {
         }
     }
     
-    /**
-     * Create Transaction IN (stock masuk dari supplier)
-     * Translation dari: create_tsx_in()
+/**
+     * Create Transaction IN (FR-TSX-02)
      */
     public function createIn($data) {
         $quantity = (int)$data['quantity'];
         $tsxDate = $data['tsx_date'] ?? date('Y-m-d');
-        $referenceDoc = $data['reference_doc'];  // Required untuk IN
+        $referenceDoc = !empty($data['reference_doc']) ? $data['reference_doc'] : null;
         $notes = $data['notes'] ?? null;
+        $monthTsx = date('Y-m-01', strtotime($tsxDate));
 
         $recordedBy = $_SESSION['user_id'] ?? null;
         if (!$recordedBy) {
             return ['success' => false, 'message' => 'User tidak terautentikasi'];
         }
         
-        // Validation
         if ($quantity <= 0) {
             return ['success' => false, 'message' => 'Quantity harus lebih dari 0'];
         }
         
-        if (empty($referenceDoc)) {
-            return ['success' => false, 'message' => 'Reference document wajib diisi untuk transaksi IN'];
-        }
-        
-        // Insert
+        // Query disesuaikan dengan skema: id_share untuk IN biasanya NULL atau 'SUPPLIER'
         $sql = "INSERT INTO gallon_tsx 
             (id_share, date_tsx, month_tsx, type_tsx, quantity, reference_doc, notes, recorded_by, created_at) 
-            VALUES (?, ?, ?, 'OUT', ?, ?, ?, ?, NOW())";
+            VALUES (NULL, ?, ?, 'IN', ?, ?, ?, ?, NOW())";
         
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sissi", $tsxDate, $quantity, $referenceDoc, $notes, $recordedBy);
+        // Binding: s (date), s (month), i (qty), s (ref), s (notes), i (user)
+        $stmt->bind_param("ssissi", $tsxDate, $monthTsx, $quantity, $referenceDoc, $notes, $recordedBy);
         
         if ($stmt->execute()) {
             return [
@@ -137,7 +133,7 @@ class Transaction {
             ];
         }
         
-        return ['success' => false, 'message' => 'Gagal menyimpan transaksi'];
+        return ['success' => false, 'message' => 'Gagal menyimpan transaksi masuk'];
     }
     
     /**
@@ -301,22 +297,25 @@ class Transaction {
         return (int)$result['total'];
     }
     
+
     /**
-     * Get current stock (total IN - total OUT)
-     * Translation dari: get_current_stock()
+     * Get Current Stock (FR-RPT-01)
      */
     public function getCurrentStock() {
         $sql = "SELECT 
-                    COALESCE(SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END), 0) as stock_in,
-                    COALESCE(SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END), 0) as stock_out
+                    SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as stock_in,
+                    SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as stock_out
                 FROM gallon_tsx";
         
         $result = $this->conn->query($sql)->fetch_assoc();
         
+        $in = (int)$result['stock_in'];
+        $out = (int)$result['stock_out'];
+        
         return [
-            'stock_in' => (int)$result['stock_in'],
-            'stock_out' => (int)$result['stock_out'],
-            'remaining' => (int)($result['stock_in'] - $result['stock_out'])
+            'stock_in' => $in,
+            'stock_out' => $out,
+            'remaining' => ($in - $out)
         ];
     }
     

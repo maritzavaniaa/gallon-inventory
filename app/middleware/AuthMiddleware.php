@@ -13,5 +13,15 @@ class AuthMiddleware {
             die("Access denied. Admin only.");
         }
     }
+
+    public static function checkLog() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: ?url=login');
+            exit;
+        }
+    }
 }
 ?>

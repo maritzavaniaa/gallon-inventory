@@ -16,11 +16,11 @@ return [
     
     // Allowance Rules
     'reset_day_of_month' => 1,         // Tanggal reset kuota
-    'auto_generate_allowance' => false, // Auto-generate atau manual
+    'auto_generate_allowance' => true, // Auto-generate atau manual : 'true' / 'false'
     
     // Stock Tracking
     'track_inventory' => true,         // Track IN/OUT stock
-    'low_stock_threshold' => 50,       // Alert kalau stock < 50
+    'low_stock_threshold' => 10,       // Alert kalau stock < 50
     
     // UI Display
     'warning_threshold' => 20,         // Warning kalau remaining < 20%
