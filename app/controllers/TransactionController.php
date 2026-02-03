@@ -31,6 +31,7 @@ class TransactionController {
             $data = [
                 'id_share' => $_POST['id_share'],
                 'quantity' => $_POST['quantity'],
+                'tsx_date'      => $_POST['tsx_date'],
                 'notes' => $_POST['notes'] ?? '',
                 'reference_doc' => $_POST['reference_doc'] ?? null
             ];

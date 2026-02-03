@@ -161,8 +161,9 @@ class Transaction {
         }
         
         // 3. Check date
-        if (!$this->config['allow_future_date'] && strtotime($tsxDate) > time()) {
-            return ['valid' => false, 'message' => 'Tanggal tidak boleh di masa depan'];
+        $today = date('Y-m-d');
+        if (!$this->config['allow_future_date'] && $tsxDate > $today) {
+            return ['valid' => false, 'message' => 'Tanggal tidak boleh di masa depan (Maksimal hari ini).'];
         }
         
         return ['valid' => true];

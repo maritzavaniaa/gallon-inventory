@@ -69,7 +69,7 @@ ob_start();
                         <p id="res-divisi" class="text-md text-blue-700 font-bold uppercase tracking-wider">Divisi: ---</p>
                     </div>
                     <div class="text-right border-l-4 border-blue-200 pl-8">
-                        <p class="text-xs uppercase font-bold text-blue-500 mb-1 tracking-widest">Sisa Jatah Bulan Ini</p>
+                        <p class="text-sm uppercase font-semibold text-blue-600 mb-1 tracking-widest">Sisa Kuota Bulan Ini</p>
                         <p id="res-kuota" class="text-5xl font-black text-blue-800">0</p>
                     </div>
                 </div>
@@ -93,7 +93,7 @@ ob_start();
 
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Catatan (Optional)</label>
-                    <textarea name="notes" placeholder="Contoh: Pengambilan jatah reguler" 
+                    <textarea name="notes" placeholder="Contoh: Pengambilan kuota reguler" 
                               class="w-full px-4 py-3 rounded-md border-2 border-gray-200 focus:border-blue-500 outline-none transition-all" rows="2"></textarea>
                 </div>
 
@@ -147,7 +147,7 @@ ob_start();
             <p class="text-gray-900 font-bold text-lg mb-2">Petunjuk Penggunaan:</p>
             <ul class="text-gray-800 text-base space-y-1 leading-relaxed">
                 <li>• Gunakan <strong>ID Share</strong> atau <strong>Nama</strong> untuk mencari penerima gallon.</li>
-                <li>• Sistem akan otomatis memblokir transaksi jika <strong>Sisa Jatah</strong> sudah habis (0).</li>
+                <li>• Sistem akan otomatis memblokir transaksi jika <strong>Sisa Kuota</strong> sudah habis (0).</li>
                 <li>• Jika ada <strong>kesalahan input transaksi</strong>, silakan hubungi Admin untuk bantuan koreksi.</li>
                 <li>• Pastikan jumlah gallon dan tanggal transaksi sudah benar sebelum menekan tombol simpan.</li>
             </ul>
