@@ -10,7 +10,11 @@ class DashboardController {
     }
     
     public function index() {
-        // Langsung load view tanpa query stats
+        if ($_SESSION['role'] !== 'admin') {
+            header('Location: ?url=transactions');
+            exit;
+        }
+
         require_once '../app/views/dashboard/index.php';
     }
 }

@@ -12,6 +12,9 @@ header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('X-XSS-Protection: 1; mode=block');
 
+// Timezone
+date_default_timezone_set('Asia/Jakarta');
+
 session_start();
 require_once '../app/helpers/functions.php';
 require_once '../app/config/database.php'; 
@@ -39,6 +42,11 @@ switch ($url) {
         exit;
 
     case 'dashboard':
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'general_user') {
+            header('Location: ?url=transactions');
+            exit;
+        }
+
         require_once '../app/controllers/DashboardController.php';
         $controller = new DashboardController($db);
         $controller->index();
@@ -104,11 +112,33 @@ switch ($url) {
         $controller = new TransactionController($db);
         $controller->index();
         break;
+
+    case 'transactions/search':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->searchSubject();
+        break;
+
+    case 'transactions/store-out':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->storeOut();
+        break;
+
+    case 'transactions/store-in':
+        require_once '../app/controllers/TransactionController.php';
+        $controller = new TransactionController($db);
+        $controller->storeIn();
+        break;
         
     case 'reports':
         require_once '../app/controllers/ReportController.php';
         $controller = new ReportController($db);
         $controller->index();
+        break;
+
+    case 'test-tsx':
+        require_once 'test-tsx.php';  // ← Nama file kamu
         break;
        
     default:
@@ -156,15 +186,24 @@ switch ($url) {
             $controller->toggleStatus($id);            
             
         } else {
-            // Dashboard
+            // Dashboard & Default Access
             if (!isset($_SESSION['user_id'])) {
                 header('Location: ?url=login');
                 exit;
             }
-            
-            require_once '../app/controllers/DashboardController.php';
-            $controller = new DashboardController($db);
-            $controller->index();
+
+            // CEK ROLE DISINI
+            if ($_SESSION['role'] === 'general_user') {
+                // General User dipaksa ke transaksi
+                require_once '../app/controllers/TransactionController.php';
+                $controller = new TransactionController($db);
+                $controller->index();
+            } else {
+                // Admin baru boleh ke dashboard
+                require_once '../app/controllers/DashboardController.php';
+                $controller = new DashboardController($db);
+                $controller->index();
+            }
         }
 }
 ?>
