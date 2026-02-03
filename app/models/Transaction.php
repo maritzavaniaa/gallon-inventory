@@ -318,6 +318,28 @@ class Transaction {
             'remaining' => ($in - $out)
         ];
     }
+
+    /**
+     * Get Daily Stats for Transaction Page
+     */
+    public function getStatsToday() {
+        $today = date('Y-m-d');
+        $sql = "SELECT 
+                    SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as total_in,
+                    SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as total_out
+                FROM gallon_tsx 
+                WHERE date_tsx = ?";
+                
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $today);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        
+        return [
+            'in' => (int)($result['total_in'] ?? 0),
+            'out' => (int)($result['total_out'] ?? 0)
+        ];
+    }
     
     /**
      * Delete transaction (admin only)

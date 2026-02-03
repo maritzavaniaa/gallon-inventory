@@ -20,6 +20,7 @@ class TransactionController {
     public function index() {
         // FR-RPT-01: Menampilkan stok gudang di dashboard/index
         $stock = $this->transactionModel->getCurrentStock();
+        $stats_today = $this->transactionModel->getStatsToday();
         require_once '../app/views/transactions/index.php';
     }
 

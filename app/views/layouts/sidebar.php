@@ -35,14 +35,14 @@ $isReports = strpos($currentUrl, 'report') !== false;
             </a>
         <?php endif; ?>
 
-        <!-- Transaksi Galon -->
+        <!-- Transaksi Gallon -->
         <a href="?url=transactions" 
            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all <?= $isTransactions ? 'bg-white bg-opacity-20 shadow-lg' : 'hover:bg-white hover:bg-opacity-10' ?>"
            style="color: <?= $isTransactions ? '#ffffff' : '#E8EFFF' ?>;">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
             </svg>
-            <span class="font-semibold">Transaksi Galon</span>
+            <span class="font-semibold">Transaksi Gallon</span>
         </a>
 
         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>

@@ -1,5 +1,5 @@
 <?php 
-$pageTitle = 'Data Penerima - Sistem Galon';
+$pageTitle = 'Data Penerima';
 ob_start(); 
 
 // --- LOGIC FILTER CONTENT (Slim Version) ---

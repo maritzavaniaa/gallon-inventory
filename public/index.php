@@ -12,6 +12,9 @@ header('X-Content-Type-Options: nosniff');
 header('X-Frame-Options: DENY');
 header('X-XSS-Protection: 1; mode=block');
 
+// Timezone
+date_default_timezone_set('Asia/Jakarta');
+
 session_start();
 require_once '../app/helpers/functions.php';
 require_once '../app/config/database.php'; 
@@ -43,7 +46,7 @@ switch ($url) {
             header('Location: ?url=transactions');
             exit;
         }
-        
+
         require_once '../app/controllers/DashboardController.php';
         $controller = new DashboardController($db);
         $controller->index();
