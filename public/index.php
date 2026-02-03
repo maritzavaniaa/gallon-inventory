@@ -39,6 +39,11 @@ switch ($url) {
         exit;
 
     case 'dashboard':
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'general_user') {
+            header('Location: ?url=transactions');
+            exit;
+        }
+        
         require_once '../app/controllers/DashboardController.php';
         $controller = new DashboardController($db);
         $controller->index();
@@ -178,15 +183,24 @@ switch ($url) {
             $controller->toggleStatus($id);            
             
         } else {
-            // Dashboard
+            // Dashboard & Default Access
             if (!isset($_SESSION['user_id'])) {
                 header('Location: ?url=login');
                 exit;
             }
-            
-            require_once '../app/controllers/DashboardController.php';
-            $controller = new DashboardController($db);
-            $controller->index();
+
+            // CEK ROLE DISINI
+            if ($_SESSION['role'] === 'general_user') {
+                // General User dipaksa ke transaksi
+                require_once '../app/controllers/TransactionController.php';
+                $controller = new TransactionController($db);
+                $controller->index();
+            } else {
+                // Admin baru boleh ke dashboard
+                require_once '../app/controllers/DashboardController.php';
+                $controller = new DashboardController($db);
+                $controller->index();
+            }
         }
 }
 ?>

@@ -97,7 +97,7 @@ class Transaction {
         }
     }
     
-/**
+    /**
      * Create Transaction IN (FR-TSX-02)
      */
     public function createIn($data) {

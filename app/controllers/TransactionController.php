@@ -26,11 +26,17 @@ class TransactionController {
     // FR-TSX-01: Input Transaksi Keluar
     public function storeOut() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Gabungkan data input dengan ID User yang login (audit log)
-            $data = $_POST;
-            $data['recorded_by'] = $_SESSION['user_id'];
-            
+            // Ambil data dari POST
+            $data = [
+                'id_share' => $_POST['id_share'],
+                'quantity' => $_POST['quantity'],
+                'notes' => $_POST['notes'] ?? '',
+                'reference_doc' => $_POST['reference_doc'] ?? null
+            ];
+
+            // Panggil model (Model kamu sudah punya method createOut)
             $result = $this->transactionModel->createOut($data);
+
             $_SESSION['flash'] = $result;
             header('Location: ?url=transactions');
             exit;
