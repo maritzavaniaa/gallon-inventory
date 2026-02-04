@@ -29,7 +29,8 @@
                    value="<?= htmlspecialchars($value) ?>"
                    placeholder="<?= htmlspecialchars($placeholder) ?>"
                    class="block w-full pl-10 pr-3 py-2 border-2 border-gray-100 rounded-md bg-white text-sm font-medium text-gray-700 focus:border-[#1F4396] focus:ring-0 focus:outline-none transition-all"
-                   autocomplete="off">
+                   autocomplete="off"
+                   oninput="debounceSearch(this)">
         </div>
 
         <button type="submit" 
@@ -45,3 +46,23 @@
     </div>
 </div>
 
+<script>
+let searchTimeout;
+
+function debounceSearch(input) {
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+        input.closest('form').submit();
+    }, 500);
+}
+
+// Opsional: Pindahkan kursor ke akhir teks setelah reload
+const searchInput = document.getElementById('live-search-input');
+if (searchInput && searchInput.value !== '') {
+    searchInput.focus();
+    const val = searchInput.value;
+    searchInput.value = '';
+    searchInput.value = val;
+}
+</script>

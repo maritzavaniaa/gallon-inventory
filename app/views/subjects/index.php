@@ -61,7 +61,17 @@ $filterContent = ob_get_clean();
     </div>
 </div>
 
-<?php include '../app/views/components/filter-container.php'; ?>
+<?php 
+// Logika deteksi apakah filter sedang aktif
+$activeFilters = array_filter([
+    'search'   => $_GET['search'] ?? '',
+    'type'     => $_GET['type'] ?? '',
+    'status'   => $_GET['status'] ?? '',
+    'division' => $_GET['division'] ?? '',
+]);
+$hasFilters = !empty($activeFilters);
+include '../app/views/components/filter-container.php';
+?>
 
 <?php if (isset($_GET['success'])): ?>
 <div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
