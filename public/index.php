@@ -137,6 +137,12 @@ switch ($url) {
         $controller = new ReportOutController($db); 
         $controller->index(); 
         break;
+        
+    case 'reports/out/export':
+        require_once '../app/controllers/ReportOutController.php';
+        $controller = new ReportOutController($db);
+        $controller->export();
+        break;
     
     // case 'reports/in':
     //     require_once '../app/models/ReportIn.php'; 

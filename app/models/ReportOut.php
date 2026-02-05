@@ -6,15 +6,23 @@ class ReportOut {
     }
 
     public function getOutReports($filters, $offset) {
-        $sql = "SELECT t.*, s.name_subject, s.division, s.type_subject, u.user_name as admin_name
-                FROM gallon_tsx t
-                JOIN subject s ON t.id_share = s.id_share
-                JOIN app_user u ON t.recorded_by = u.id_user
-                WHERE t.type_tsx = 'OUT'";
+        $sql = "SELECT t.*, s.name_subject, s.division, s.type_subject, 
+                g.name_grade,
+                ma.amount,
+                u.user_name as admin_name
+        FROM gallon_tsx t
+        JOIN subject s ON t.id_share = s.id_share
+        JOIN app_user u ON t.recorded_by = u.id_user
+        LEFT JOIN grade_employee g ON s.id_grade = g.id_grade
+        -- Join ke monthly_allowance berdasarkan ID dan bulan/tahun yang sama
+        LEFT JOIN monthly_allowance ma ON t.id_share = ma.id_share 
+            AND DATE_FORMAT(t.month_tsx, '%Y-%m') = DATE_FORMAT(ma.allowance_month, '%Y-%m')
+        WHERE t.type_tsx = 'OUT'";
     
         $params = [];
         $types = "";
-
+    
+        // Filter-filter (Tetap sama seperti kode kamu sebelumnya)
         if (!empty($filters['date_start'])) {
             $sql .= " AND t.date_tsx >= ?";
             $params[] = $filters['date_start'];
@@ -47,8 +55,7 @@ class ReportOut {
         }
     
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
     public function countOutReports($filters) {
