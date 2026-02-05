@@ -11,11 +11,11 @@ ob_start();
     
     <div class="flex gap-4">
         <div class="bg-white px-5 py-3 rounded-md border-2 border-gray-200 text-center shadow-sm">
-            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Stok Internal</p>
+            <p class="text-md text-gray-500 uppercase font-semibold tracking-wider">Stok Internal</p>
             <p class="text-2xl font-bold text-blue-800"><?= $stock['remaining'] ?? 0 ?></p>
         </div>
         <div class="bg-white px-5 py-3 rounded-md border-2 border-gray-200 text-center shadow-sm">
-            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Keluar Hari Ini</p>
+            <p class="text-md text-gray-500 uppercase font-semibold tracking-wider">Keluar Hari Ini</p>
             <p class="text-2xl font-bold text-green-600"><?= $stats_today['out'] ?? 0 ?></p>
         </div>
     </div>
@@ -37,22 +37,22 @@ ob_start();
         <span class="w-2 h-2 rounded-full bg-blue-600"></span> Gallon Keluar
     </button>
     <button onclick="switchTab('in')" id="btn-in" class="px-8 py-3 rounded-sm font-bold text-gray-600 transition-all flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-green-600"></span> Gallon Masuk
+        <span class="w-2 h-2 rounded-full bg-green-600"></span> Intern Gallon
     </button>
 </div>
 
 <div class="bg-white rounded-md border-2 border-gray-200 shadow-sm">
     
     <div id="panel-out" class="animate-fade-in">
-        <div class="py-4 px-6 mb-6" style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
+        <div class="py-4 px-6 mb-2" style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
             <h2 class="text-xl font-bold text-white">FORM DISTRIBUSI GALLON (OUT)</h2>
         </div>
 
         <div class="p-8 space-y-6">
             <div class="flex gap-2 items-end">
                 <div class="flex-1 relative"> 
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Cari Subjek (ID Share atau Nama)</label>
-                    <input type="text" id="search-input" autocomplete="off" placeholder="Ketik minimal 2 karakter..." 
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Cari Subjek (ID Share)</label>
+                    <input type="text" id="search-input" autocomplete="off" placeholder="Ketik minimal 2 angka..." inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
                             class="w-full px-4 py-3 rounded-md border-2 border-gray-200 focus:border-blue-500 outline-none transition-all">
                             
                     <div id="search-results" class="hidden absolute z-50 w-full mt-1 bg-white border-2 border-gray-300 rounded-md shadow-xl max-h-60 overflow-y-auto"></div>
@@ -106,8 +106,8 @@ ob_start();
     </div>
 
     <div id="panel-in" class="hidden animate-fade-in">
-        <div class="py-4 px-6 mb-6" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-            <h2 class="text-xl font-bold text-white">FORM RESTOCK GUDANG (IN)</h2>
+        <div class="py-4 px-6 mb-2" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <h2 class="text-xl font-bold text-white">FORM RESTOCK INTERN (IN)</h2>
         </div>
 
         <form action="?url=transactions/store-in" method="POST" class="p-8 space-y-6">

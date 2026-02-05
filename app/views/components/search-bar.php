@@ -25,12 +25,13 @@
                 </svg>
             </div>
             <input type="text" 
-                   name="<?= htmlspecialchars($name) ?>" 
-                   value="<?= htmlspecialchars($value) ?>"
-                   placeholder="<?= htmlspecialchars($placeholder) ?>"
-                   class="block w-full pl-10 pr-3 py-2 border-2 border-gray-100 rounded-md bg-white text-sm font-medium text-gray-700 focus:border-[#1F4396] focus:ring-0 focus:outline-none transition-all"
-                   autocomplete="off"
-                   oninput="debounceSearch(this)">
+                id="live-search-input"
+                name="<?= htmlspecialchars($name) ?>" 
+                value="<?= htmlspecialchars($value) ?>"
+                placeholder="<?= htmlspecialchars($placeholder) ?>"
+                class="block w-full pl-10 pr-3 py-2 border-2 border-gray-100 rounded-md bg-white text-sm font-medium text-gray-700 focus:border-[#1F4396] focus:ring-0 focus:outline-none transition-all"
+                autocomplete="off"
+                oninput="handleSearchInput(this, <?= (isset($isNumeric) && $isNumeric) ? 'true' : 'false' ?>)">
         </div>
 
         <button type="submit" 
@@ -49,20 +50,28 @@
 <script>
 let searchTimeout;
 
-function debounceSearch(input) {
+function handleSearchInput(input, isNumeric) {
+    // 1. Jika mode numerik, bersihkan karakter non-angka
+    if (isNumeric) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+    // 2. Jalankan debounce untuk submit form
     clearTimeout(searchTimeout);
-
     searchTimeout = setTimeout(() => {
-        input.closest('form').submit();
-    }, 500);
+        const form = input.closest('form');
+        if (form) form.submit();
+    }, 600); 
 }
 
-// Opsional: Pindahkan kursor ke akhir teks setelah reload
-const searchInput = document.getElementById('live-search-input');
-if (searchInput && searchInput.value !== '') {
-    searchInput.focus();
-    const val = searchInput.value;
-    searchInput.value = '';
-    searchInput.value = val;
-}
+// Memastikan kursor tetap di akhir teks setelah halaman reload 
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('live-search-input');
+    if (searchInput && searchInput.value !== '') {
+        searchInput.focus();
+        const val = searchInput.value;
+        searchInput.value = '';
+        searchInput.value = val;
+    }
+});
 </script>

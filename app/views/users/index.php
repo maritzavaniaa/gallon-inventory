@@ -30,6 +30,7 @@ $hasFilters = !empty($_GET['search']) || !empty($_GET['role']) || !empty($_GET['
 ob_start();
     $label = 'Cari User';
     $placeholder = 'Cari berdasarkan username...';
+    $isNumeric = false;
     include '../app/views/components/search-bar.php';
 $searchContent = ob_get_clean();
 

@@ -7,7 +7,8 @@ ob_start(); ?>
     <div class="w-full">
         <?php 
         $label = 'Cari Penerima'; 
-        $placeholder = 'Ketik Nama atau ID Share...'; 
+        $placeholder = 'Ketik ID Share...'; 
+        $isNumeric = true;
         include '../app/views/components/search-bar.php'; 
         ?>
     </div>
@@ -29,7 +30,11 @@ ob_start(); ?>
     <?php 
         $label = 'Divisi'; $name = 'division'; 
         $options = [];
-        foreach ($divisions as $div) { $options[$div['division']] = $div['division']; }
+        if (isset($allDivisions)) {
+            foreach ($allDivisions as $div) { 
+                $options[$div] = $div; 
+            }
+        }
         include '../app/views/components/filter-dropdown.php'; 
     ?>
     <?php 
@@ -100,8 +105,8 @@ include '../app/views/components/filter-container.php';
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
                 <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 12%;">ID SHARE</th>
                 <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 23%;">NAMA</th>
-                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">DIVISI</th>
-                <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">STATUS</th>
+                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 18%;">DIVISI</th>
+                <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 12%;">STATUS</th>
                 <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">GRADE/KUOTA</th>
                 <th class="py-4 px-5 text-center text-white font-semibold" style="width: 20%;">AKSI</th>
             </tr>
