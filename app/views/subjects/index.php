@@ -17,17 +17,27 @@ $searchContent = ob_get_clean();
 
 // Baris 2: Dropdowns (Tipe, Status, Divisi)
 ob_start(); ?>
-    <?php 
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Tipe Subject
         $label = 'Kategori'; $name = 'type'; 
         $options = ['karyawan' => 'Karyawan', 'non_karyawan' => 'Non-Karyawan'];
         include '../app/views/components/filter-dropdown.php'; 
     ?>
-    <?php 
+</div>
+
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Status
         $label = 'Status'; $name = 'status'; 
         $options = ['aktif' => 'Aktif', 'non_aktif' => 'Non-Aktif'];
         include '../app/views/components/filter-dropdown.php'; 
     ?>
-    <?php 
+</div>
+
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Division
         $label = 'Divisi'; $name = 'division'; 
         $options = [];
         if (isset($allDivisions)) {
@@ -37,13 +47,19 @@ ob_start(); ?>
         }
         include '../app/views/components/filter-dropdown.php'; 
     ?>
-    <?php 
+</div>
+
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Pagination
         $label = 'Tampilkan'; $name = 'per_page'; 
         $options = ['10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'];
         include '../app/views/components/filter-dropdown.php'; 
         // '1' => '1 Baris', '2' => '2 Baris', '3' => '3 Baris'
         // '10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'
     ?>
+</div>
+
 <?php 
 $filterContent = ob_get_clean(); 
 ?>

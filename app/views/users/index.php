@@ -35,21 +35,29 @@ ob_start();
 $searchContent = ob_get_clean();
 
 // 3. Siapkan konten Filter Dropdown
-ob_start();
-    // Dropdown Role
-    $label = 'Hak Akses';
-    $name = 'role';
-    $options = ['admin' => 'Administrator', 'general_user' => 'General User'];
-    include '../app/views/components/filter-dropdown.php';
+ob_start(); ?>
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Role
+        $label = 'Hak Akses';
+        $name = 'role';
+        $options = ['admin' => 'Administrator', 'general_user' => 'General User'];
+        include '../app/views/components/filter-dropdown.php';
+    ?>
+</div>
 
-    // Dropdown Status
-    $label = 'Status Akun';
-    $name = 'status';
-    $options = ['aktif' => 'Aktif', 'non_aktif' => 'Non-aktif'];
-    include '../app/views/components/filter-dropdown.php';
-$filterContent = ob_get_clean();
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Status
+        $label = 'Status Akun';
+        $name = 'status';
+        $options = ['aktif' => 'Aktif', 'non_aktif' => 'Non-aktif'];
+        include '../app/views/components/filter-dropdown.php';
+    ?>
+</div>
 
-// 4. Render Container
+<?php
+$filterContent = ob_get_clean(); 
 include '../app/views/components/filter-container.php';
 ?>
 
