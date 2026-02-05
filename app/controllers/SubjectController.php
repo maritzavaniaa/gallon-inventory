@@ -43,7 +43,18 @@ class SubjectController extends Controller{
             $pagination['offset'], 
             $pagination['limit']
         );
-    
+        
+        // Ambil list divisi "Resmi" dari helpers/functions.php
+        $officialDivisions = function_exists('getDivisionList') ? getDivisionList() : [];
+        
+        // Ambil divisi yang sudah ada di database (Unique)
+        $dbDivisions = $this->subjectModel->getUniqueDivisions();
+        $existingList = array_column($dbDivisions, 'division');
+        
+        // Gabungkan keduanya, hilangkan duplikat, dan urutkan A-Z
+        $allDivisions = array_unique(array_merge($officialDivisions, $existingList));
+        sort($allDivisions);
+
         $divisions = $this->subjectModel->getUniqueDivisions();
         $stats = $this->subjectModel->getStats();
         
@@ -69,7 +80,7 @@ class SubjectController extends Controller{
                 'id_share' => strtoupper(trim($_POST['id_share'])),
                 'type_subject' => $_POST['type_subject'],
                 'name_subject' => trim($_POST['name_subject']),
-                'division' => trim($_POST['division'] ?? ''),
+                'division' => strtoupper(trim($_POST['division'] ?? '')),
                 'status' => 'aktif', // Default aktif
                 'inactive_note' => '',
                 'id_grade' => $_POST['id_grade'] ?? null,
@@ -104,12 +115,14 @@ class SubjectController extends Controller{
     }
     
     public function update($id_share) {
-        if ($_POST) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $existing = $this->subjectModel->findById($id_share);
+            
             $data = [
                 'id_share' => $id_share,
-                'type_subject' => $_POST['type_subject'],
+                'type_subject' => $_POST['type_subject'] ?? $existing['type_subject'],
                 'name_subject' => trim($_POST['name_subject']),
-                'division' => trim($_POST['division'] ?? ''),
+                'division' => strtoupper(trim($_POST['division'] ?? '')),
                 'status' => $_POST['status'],
                 'inactive_note' => trim($_POST['inactive_note'] ?? ''),
                 'id_grade' => $_POST['id_grade'] ?? null,
@@ -121,8 +134,8 @@ class SubjectController extends Controller{
             } else {
                 header('Location: ?url=subjects&error=2');
             }
+            exit;
         }
-        exit;
     }
     
     public function delete($id_share) {

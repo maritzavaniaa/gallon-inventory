@@ -76,11 +76,29 @@ ob_start();
                 <label class="block text-md font-semibold mb-2 text-gray-900">
                     Divisi
                 </label>
-                <input type="text" 
-                       name="division" 
-                       placeholder="Contoh: Produksi, IT, Maintenance"
-                       class="w-full p-2 text-md uppercase border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
-                <p class="text-sm text-gray-500 mt-2">Opsional - sesuaikan dengan struktur organisasi</p>
+                <div id="division_karyawan_wrapper">
+                    <select name="division_select" 
+                            id="division_select"
+                            class="w-full p-2 text-md border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
+                        <option value="">-- Pilih Divisi --</option>
+                        <?php foreach (getDivisionList() as $div): ?>
+                            <option value="<?= $div ?>"><?= $div ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div id="division_non_karyawan_wrapper" style="display:none;">
+                    <input type="text" 
+                        name="division_text" 
+                        id="division_text"
+                        placeholder="Ketik divisi bebas..."
+                        style="text-transform: uppercase;"
+                        class="w-full p-2 text-md border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
+                </div>
+
+                <input type="hidden" name="division" id="division_final">
+                
+                <p class="text-sm text-gray-500 mt-2">Untuk karyawan silakan pilih list, untuk non-karyawan bisa isi bebas.</p>
             </div>
             
             <!-- Grade Field (Karyawan) -->
@@ -145,26 +163,46 @@ function toggleFields() {
     const allowanceField = document.getElementById('allowance_field');
     const gradeSelect = document.getElementById('grade_select');
     const allowanceInput = document.getElementById('allowance_input');
+    const divKaryawan = document.getElementById('division_karyawan_wrapper');
+    const divNon = document.getElementById('division_non_karyawan_wrapper');
     
     if (type === 'karyawan') {
+        // Tampilkan Grade & Divisi Dropdown
         gradeField.style.display = 'block';
         allowanceField.style.display = 'none';
+        divKaryawan.style.display = 'block';
+        divNon.style.display = 'none';
+
         gradeSelect.required = true;
         allowanceInput.required = false;
         allowanceInput.value = '';
     } else if (type === 'non_karyawan') {
         gradeField.style.display = 'none';
         allowanceField.style.display = 'block';
+        divKaryawan.style.display = 'none';
+        divNon.style.display = 'block';
+
         gradeSelect.required = false;
         gradeSelect.value = '';
         allowanceInput.required = true;
     } else {
         gradeField.style.display = 'none';
         allowanceField.style.display = 'none';
-        gradeSelect.required = false;
-        allowanceInput.required = false;
+        divKaryawan.style.display = 'block'; // Default tampilan
+        divNon.style.display = 'none';
     }
 }
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    const type = document.getElementById('type_subject').value;
+    const finalInput = document.getElementById('division_final');
+    
+    if (type === 'karyawan') {
+        finalInput.value = document.getElementById('division_select').value;
+    } else {
+        finalInput.value = document.getElementById('division_text').value;
+    }
+});
 </script>
 
 

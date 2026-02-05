@@ -32,6 +32,7 @@ $hasFilters = !empty($_GET['search']);
 ob_start();
     $label = 'Cari Grade';
     $placeholder = 'Masukkan nama grade...';
+    $isNumeric = false;
     include '../app/views/components/search-bar.php';
 $searchContent = ob_get_clean();
 

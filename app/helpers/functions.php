@@ -67,4 +67,26 @@ function getPagination($totalRecords, $currentPage = 1, $perPage = 50) {
     ];
 }
 
+/**
+ * Mendapatkan daftar divisi resmi untuk karyawan
+ * @return array
+ */
+function getDivisionList() {
+    return [
+        "FINANCE", 
+        "CSR", 
+        "HUMAN RESOURCE", 
+        "LOGISTIK", 
+        "MAN-01 YUDHISTIRA", 
+        "MAN-01 GATHOTKACA", 
+        "MAN-02 BIMA", 
+        "MAN-02 SRIKANDI", 
+        "MAN-02 SHINTA", 
+        "PERFORMANCE", 
+        "QA", 
+        "SHE", 
+        "TEHNIK"
+    ];
+}
+
 ?>

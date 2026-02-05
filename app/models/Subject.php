@@ -147,33 +147,31 @@ class Subject {
     }
 
     public function countAll($filters = []) {
-        $sql = "SELECT COUNT(*) as total FROM subject WHERE 1=1";
+        $sql = "SELECT COUNT(*) as total FROM subject s WHERE 1=1";
         $params = [];
         $types = "";
         
-        // Apply filters (same as getAll method)
         if (!empty($filters['search'])) {
-            $sql .= " AND (name_subject LIKE ? OR id_share LIKE ?)";
+            $sql .= " AND s.id_share LIKE ?";
             $searchTerm = "%" . $filters['search'] . "%";
             $params[] = $searchTerm;
-            $params[] = $searchTerm;
-            $types .= "ss";
+            $types .= "s"; 
         }
         
         if (!empty($filters['type'])) {
-            $sql .= " AND type_subject = ?";
+            $sql .= " AND s.type_subject = ?";
             $params[] = $filters['type'];
             $types .= "s";
         }
         
         if (!empty($filters['status'])) {
-            $sql .= " AND status = ?";
+            $sql .= " AND s.status = ?";
             $params[] = $filters['status'];
             $types .= "s";
         }
         
         if (!empty($filters['division'])) {
-            $sql .= " AND division = ?";
+            $sql .= " AND s.division = ?";
             $params[] = $filters['division'];
             $types .= "s";
         }
@@ -208,13 +206,11 @@ class Subject {
         $params = [];
         $types = "";
         
-        // Apply filters (sama seperti method countAll)
         if (!empty($filters['search'])) {
-            $sql .= " AND (s.name_subject LIKE ? OR s.id_share LIKE ?)";
+            $sql .= " AND s.id_share LIKE ?";
             $searchTerm = "%" . $filters['search'] . "%";
             $params[] = $searchTerm;
-            $params[] = $searchTerm;
-            $types .= "ss";
+            $types .= "s"; 
         }
         
         if (!empty($filters['type'])) {

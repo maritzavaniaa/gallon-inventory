@@ -35,8 +35,8 @@
             <div class="flex justify-center">
                 <img src="./assets/images/logo.svg" alt="Logo" class="h-24 w-auto">
             </div>
-            <h2 class="text-2xl font-extrabold text-[#1F4396] uppercase tracking-tight">Inventaris Gallon</h2>
-            <p class="text-gray-500 text-sm mt-1">Sistem Manajemen Distribusi Galon</p>
+            <h2 class="text-2xl font-extrabold text-[#1F4396] uppercase tracking-tight">Sistem Intern Gallon</h2>
+            <p class="text-gray-500 text-sm mt-1">Plant Pandaan</p>
         </div>
         
         <?php if (isset($error) && $error): ?>

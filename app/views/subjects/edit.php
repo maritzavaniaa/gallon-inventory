@@ -25,6 +25,7 @@ ob_start();
         <?php endif; ?>
         
         <form method="POST" action="?url=subjects/update/<?= $subject['id_share'] ?>" class="space-y-6">
+            <input type="hidden" name="type_subject" value="<?= $subject['type_subject'] ?>">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- ID Share -->
                 <div>
@@ -60,11 +61,35 @@ ob_start();
             <!-- Divisi -->
             <div>
                 <label class="block text-md font-semibold mb-2 text-gray-900">Divisi</label>
-                <input type="text" 
-                       name="division" 
-                       value="<?= htmlspecialchars($subject['division'] ?? '') ?>" 
-                       placeholder="Contoh: Produksi, IT, Maintenance"
-                       class="w-full p-2 text-md uppercase border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
+                
+                <?php if ($subject['type_subject'] == 'karyawan'): ?>
+                    <div id="division_karyawan_wrapper">
+                        <select id="division_select" 
+                                class="w-full p-2 text-md border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
+                            <option value="">-- Pilih Divisi --</option>
+                            <?php 
+                            $list = function_exists('getDivisionList') ? getDivisionList() : [];
+                            foreach ($list as $div): 
+                            ?>
+                                <option value="<?= $div ?>" <?= ($subject['division'] == $div) ? 'selected' : '' ?>>
+                                    <?= $div ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                <?php else: ?>
+                    <div id="division_non_karyawan_wrapper">
+                        <input type="text" 
+                            id="division_text" 
+                            value="<?= htmlspecialchars($subject['division'] ?? '') ?>"
+                            placeholder="Ketik divisi bebas..."
+                            style="text-transform: uppercase;"
+                            class="w-full p-2 text-md border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
+                    </div>
+                <?php endif; ?>
+
+                <input type="hidden" name="division" id="division_final" value="<?= htmlspecialchars($subject['division'] ?? '') ?>">
+                <p class="text-sm text-gray-500 mt-2">Data divisi saat ini: <?= htmlspecialchars($subject['division'] ?: '-') ?></p>
             </div>
             
             <!-- Grade (Karyawan) atau Kuota (Non-Karyawan) -->
@@ -213,6 +238,19 @@ function toggleInactiveNote() {
     field.style.display = status === 'non_aktif' ? 'block' : 'none';
 }
 
+function syncDivision() {
+    const type = "<?= $subject['type_subject'] ?>";
+    const finalInput = document.getElementById('division_final');
+    
+    if (type === 'karyawan') {
+        const selectEl = document.getElementById('division_select');
+        finalInput.value = selectEl.value;
+    } else {
+        const textEl = document.getElementById('division_text');
+        finalInput.value = textEl.value;
+    }
+}
+
 function confirmDelete() {
     document.getElementById('deleteModal').classList.remove('hidden');
 }
@@ -222,8 +260,12 @@ function closeDeleteModal() {
 }
 
 // Close on ESC key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeDeleteModal();
+document.addEventListener('DOMContentLoaded', function() {
+    const selectEl = document.getElementById('division_select');
+    const textEl = document.getElementById('division_text');
+
+    if (selectEl) selectEl.addEventListener('change', syncDivision);
+    if (textEl) textEl.addEventListener('input', syncDivision);
 });
 </script>
 

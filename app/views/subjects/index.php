@@ -7,7 +7,8 @@ ob_start(); ?>
     <div class="w-full">
         <?php 
         $label = 'Cari Penerima'; 
-        $placeholder = 'Ketik Nama atau ID Share...'; 
+        $placeholder = 'Ketik ID Share...'; 
+        $isNumeric = true;
         include '../app/views/components/search-bar.php'; 
         ?>
     </div>
@@ -29,7 +30,11 @@ ob_start(); ?>
     <?php 
         $label = 'Divisi'; $name = 'division'; 
         $options = [];
-        foreach ($divisions as $div) { $options[$div['division']] = $div['division']; }
+        if (isset($allDivisions)) {
+            foreach ($allDivisions as $div) { 
+                $options[$div] = $div; 
+            }
+        }
         include '../app/views/components/filter-dropdown.php'; 
     ?>
     <?php 
@@ -61,7 +66,17 @@ $filterContent = ob_get_clean();
     </div>
 </div>
 
-<?php include '../app/views/components/filter-container.php'; ?>
+<?php 
+// Logika deteksi apakah filter sedang aktif
+$activeFilters = array_filter([
+    'search'   => $_GET['search'] ?? '',
+    'type'     => $_GET['type'] ?? '',
+    'status'   => $_GET['status'] ?? '',
+    'division' => $_GET['division'] ?? '',
+]);
+$hasFilters = !empty($activeFilters);
+include '../app/views/components/filter-container.php';
+?>
 
 <?php if (isset($_GET['success'])): ?>
 <div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
@@ -90,8 +105,8 @@ $filterContent = ob_get_clean();
             <tr style="background: linear-gradient(135deg, #1F4396 0%, #2E5BBE 100%);">
                 <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 12%;">ID SHARE</th>
                 <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 23%;">NAMA</th>
-                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">DIVISI</th>
-                <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">STATUS</th>
+                <th class="py-4 px-5 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 18%;">DIVISI</th>
+                <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 12%;">STATUS</th>
                 <th class="py-4 px-5 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 15%;">GRADE/KUOTA</th>
                 <th class="py-4 px-5 text-center text-white font-semibold" style="width: 20%;">AKSI</th>
             </tr>
