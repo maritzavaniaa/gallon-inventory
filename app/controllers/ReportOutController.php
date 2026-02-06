@@ -7,6 +7,8 @@ class ReportOutController extends Controller {
         $limitRaw = $_GET['limit'] ?? 10;
         $limit = (empty($limitRaw) || $limitRaw === 'all') ? 500 : (int)$limitRaw;
 
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+
         $filters = [
             'search'     => $_GET['search'] ?? '',
             'date_start' => $_GET['date_start'] ?? '',
@@ -26,6 +28,38 @@ class ReportOutController extends Controller {
         $divisions = $model->getDistinctDivisions();
         
         $totalPages = ceil($totalData / $filters['limit']);
+
+        // Summary cards components
+        $summaryData = $model->getOutSummary($filters);
+
+        $totalQty = $summaryData['total_qty'] ?? 0;
+        $totalPenerima = $summaryData['total_penerima'] ?? 0;
+        
+        $rataRata = ($totalPenerima > 0) ? ($totalQty / $totalPenerima) : 0;
+        
+        $cards = [
+            [
+                'label' => 'Total Galon Keluar',
+                'value' => $totalQty,
+                'unit'  => 'Gallons',
+                'color' => 'text-red-500',
+                'subtext' => 'Total pengambilan periode ini'
+            ],
+            [
+                'label' => 'Total Penerima',
+                'value' => $totalPenerima,
+                'unit'  => 'Orang',
+                'color' => 'text-blue-600',
+                'subtext' => 'Jumlah individu unik yang mengambil'
+            ],
+            [
+                'label' => 'Rata-rata Pengambilan',
+                'value' => $rataRata,
+                'unit'  => 'Galon/Orang',
+                'color' => 'text-emerald-500',
+                'subtext' => 'Rasio galon per individu'
+            ]
+        ];
 
         require_once '../app/views/reports/out/index.php';
     }

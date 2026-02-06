@@ -63,14 +63,19 @@ ob_start(); ?>
         // Pagination
         $label = 'Tampilkan';
         $name = 'limit';
+        $showAll = false;
         $options = ['10' => '10 Data', '50' => '50 Data', '100' => '100 Data', '200' => '200 Data'];
         include '../app/views/components/filter-dropdown.php'; 
         ?>
     </div>
-<?php $filterContent = ob_get_clean();
+<?php 
+$filterContent = ob_get_clean();
 
 // 3. Render Container Filter
 include '../app/views/components/filter-container.php';
+
+// 4. Render Summary Cards
+include '../app/views/components/summary-cards.php';
 ?>
 
 <div class="bg-white rounded-md overflow-hidden border-2 border-gray-200 shadow-sm mt-6">

@@ -108,4 +108,47 @@ class ReportOut {
         }
         return $divisions;
     }
+
+    public function getOutSummary($filters) {
+        $sql = "SELECT 
+                    SUM(t.quantity) as total_qty,
+                    COUNT(DISTINCT t.id_share) as total_penerima
+                FROM gallon_tsx t
+                JOIN subject s ON t.id_share = s.id_share
+                LEFT JOIN monthly_allowance ma ON t.id_share = ma.id_share 
+                     AND DATE_FORMAT(t.month_tsx, '%Y-%m') = DATE_FORMAT(ma.allowance_month, '%Y-%m')
+                WHERE t.type_tsx = 'OUT'";
+    
+        $params = [];
+        $types = "";
+
+        if (!empty($filters['date_start'])) {
+            $sql .= " AND t.date_tsx >= ?";
+            $params[] = $filters['date_start'];
+            $types .= "s";
+        }
+        if (!empty($filters['date_end'])) {
+            $sql .= " AND t.date_tsx <= ?";
+            $params[] = $filters['date_end'];
+            $types .= "s";
+        }
+        if (!empty($filters['division'])) {
+            $sql .= " AND s.division = ?";
+            $params[] = $filters['division'];
+            $types .= "s";
+        }
+        if (!empty($filters['search'])) {
+            $sql .= " AND t.id_share LIKE ?";
+            $params[] = "%" . $filters['search'] . "%";
+            $types .= "s";
+        }
+    
+        $stmt = $this->conn->prepare($sql);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+    
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
 }
