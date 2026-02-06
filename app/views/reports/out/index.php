@@ -78,6 +78,20 @@ include '../app/views/components/filter-container.php';
 include '../app/views/components/summary-cards.php';
 ?>
 
+<?php if (isset($_GET['success']) && $_GET['success'] == '3'): ?>
+<div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
+    <strong class="font-bold text-green-700">Berhasil!</strong>
+    Transaksi telah dibatalkan dan stok galon telah dikembalikan.
+</div>
+<?php endif; ?>
+
+<?php if (isset($_GET['error']) && $_GET['error'] == 'wrong_password'): ?>
+<div class="bg-red-50 border-2 border-red-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
+    <strong class="font-bold text-red-700">Gagal!</strong>
+    Password admin salah. Transaksi tidak dapat dibatalkan.
+</div>
+<?php endif; ?>
+
 <div class="bg-white rounded-md overflow-hidden border-2 border-gray-200 shadow-sm mt-6">
     <table class="w-full text-base">
         <thead>
