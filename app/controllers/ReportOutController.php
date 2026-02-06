@@ -39,7 +39,7 @@ class ReportOutController extends Controller {
         
         $cards = [
             [
-                'label' => 'Total Galon Keluar',
+                'label' => 'Total Gallon Keluar',
                 'value' => $totalQty,
                 'unit'  => 'Gallons',
                 'color' => 'text-red-500',
@@ -55,9 +55,9 @@ class ReportOutController extends Controller {
             [
                 'label' => 'Rata-rata Pengambilan',
                 'value' => $rataRata,
-                'unit'  => 'Galon/Orang',
+                'unit'  => 'Gallon/Orang',
                 'color' => 'text-emerald-500',
-                'subtext' => 'Rasio galon per individu'
+                'subtext' => 'Rasio gallon per individu'
             ]
         ];
 
@@ -96,12 +96,51 @@ class ReportOutController extends Controller {
                 $r['name_subject'],
                 $r['division'] ?: '-',
                 ($r['type_subject'] === 'karyawan') ? ($r['name_grade'] ?? '-') : '-',
-                $r['amount'] ?? 0, // Mengambil amount dari monthly_allowance
+                $r['amount'] ?? 0, 
                 $r['quantity']
             ]);
         }
     
         fclose($output);
+        exit;
+    }
+
+    public function delete($id) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $inputPassword = $_POST['admin_password'] ?? '';
+            $adminId = $_SESSION['user_id'] ?? $_SESSION['id_user'] ?? null;
+
+            if (!$adminId) {
+                header('Location: ?url=login');
+                exit;
+            }
+    
+            // 1. Ambil password asli (hashed) dari database
+            $stmt = $this->db->prepare("SELECT password_hash FROM app_user WHERE id_user = ?");
+            $stmt->bind_param("i", $adminId);
+            $stmt->execute();
+            $user = $stmt->get_result()->fetch_assoc();
+    
+            // 2. Verifikasi Password
+            if ($user && password_verify($inputPassword, $user['password_hash'])) {
+                require_once '../app/models/ReportOut.php';
+                $model = new ReportOut($this->db);
+                
+                if ($model->softDelete($id)) {
+                    // Berhasil: Redirect dengan kode success (3 = Berhasil Batal)
+                    header('Location: ?url=reports/out&success=3');
+                } else {
+                    header('Location: ?url=reports/out&error=system');
+                }
+            } else {
+                // Password Salah
+                header('Location: ?url=reports/out&error=wrong_password');
+            }
+            exit;
+        }
+        
+        // Jika diakses via GET (langsung ke URL), lempar balik ke laporan
+        header('Location: ?url=reports/out');
         exit;
     }
 }

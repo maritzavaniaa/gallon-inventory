@@ -125,25 +125,18 @@ include '../app/views/components/summary-cards.php';
                     </td>
 
                     <?php if ($_SESSION['role'] === 'admin'): ?>
-                    <td class="py-3 px-4">
-                        <div class="flex justify-center gap-1.5">
-                            <a href="?url=transactions/edit/<?= $r['id_tsx'] ?>" 
-                               class="p-2 bg-yellow-100 text-yellow-600 hover:bg-yellow-500 hover:text-white rounded-lg transition-all shadow-sm"
-                               title="Edit Data">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
-                            </a>
-                            <button type="button"
-                                    onclick="confirmDeleteTsx('<?= $r['id_tsx'] ?>')"
-                                    class="p-2 bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-all shadow-sm"
-                                    title="Hapus Data">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
+                        <td class="py-3 px-4">
+                            <div class="flex justify-center">
+                                <button type="button"
+                                        onclick="confirmDeleteOut('<?= $r['id_tsx'] ?>', '<?= htmlspecialchars($r['name_subject'], ENT_QUOTES) ?>', '<?= htmlspecialchars($r['id_share'], ENT_QUOTES) ?>', '<?= $r['quantity'] ?>', '<?= date('d/m/Y', strtotime($r['date_tsx'])) ?>')"
+                                        class="p-2 bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-all shadow-sm group"
+                                        title="Batalkan Transaksi">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
                     <?php endif; ?>
                 </tr>
                 <?php endforeach; ?>
@@ -151,6 +144,75 @@ include '../app/views/components/summary-cards.php';
         </tbody>
     </table>
 </div>
+
+<!-- Delete confirmation modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closeDeleteModal()">
+    <div class="bg-white rounded-md shadow-md p-10 max-w-xl w-full mx-4">
+        <form id="deleteForm" method="POST" action="">
+            <div class="text-center mb-6">
+                <h2 class="text-lg font-bold text-gray-900 mb-3 uppercase">KONFIRMASI PEMBATALAN</h2>
+                <p class="text-md text-gray-800 mb-4 leading-relaxed">
+                    Apakah Anda <strong class="text-red-600">YAKIN</strong> ingin membatalkan transaksi ini?
+                </p>
+                
+                <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mb-6 text-center">
+                    <p class="text-xs text-yellow-700 font-bold uppercase tracking-widest mb-1">Detail Transaksi</p>
+                    <p class="text-xl font-bold text-gray-900">
+                        <span id="delName"></span> (<span id="delIdShare" class="text-blue-700"></span>)
+                    </p>
+                    <p class="text-base text-gray-700 border-t border-yellow-200 mt-2 pt-2" id="delInfo"></p>
+                </div>
+
+                <p class="text-md text-gray-600 mb-4 font-medium">
+                    Silakan masukkan password Anda untuk memproses:
+                </p>
+
+                <div class="mb-6">
+                    <input type="password" name="admin_password" required
+                           placeholder="Masukkan Password Admin"
+                           class="w-full px-4 py-4 border-2 border-gray-200 rounded-md focus:border-red-500 focus:outline-none text-center text-lg shadow-inner bg-gray-50">
+                </div>
+
+                <p class="text-md text-red-600 font-bold">
+                    Stok akan dikembalikan otomatis setelah dikonfirmasi!
+                </p>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+                <button type="submit" 
+                        class="block bg-red-600 hover:bg-red-700 text-white font-semibold text-md py-5 rounded-md text-center transition-all shadow-lg uppercase">
+                    YA, KONFIRMASI SEKARANG
+                </button>
+                <button type="button"
+                        onclick="closeDeleteModal()"
+                        class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-semibold text-md py-5 rounded-md transition-all uppercase">
+                    BATAL, JANGAN HAPUS
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function confirmDeleteOut(id, name, idShare, qty, date) {
+    document.getElementById('delName').textContent = name;
+    document.getElementById('delIdShare').textContent = idShare;
+    document.getElementById('delInfo').textContent = qty + ' Galon - ' + date;
+
+    document.getElementById('deleteForm').action = '?url=reports/out/delete/' + id;
+    
+    document.getElementById('deleteModal').classList.remove('hidden');
+}
+
+function closeDeleteModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+
+// Close on ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDeleteModal();
+});
+</script>
 
 <?php 
 $baseUrl = '?url=reports/out';

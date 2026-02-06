@@ -117,7 +117,8 @@ class ReportOut {
                 JOIN subject s ON t.id_share = s.id_share
                 LEFT JOIN monthly_allowance ma ON t.id_share = ma.id_share 
                      AND DATE_FORMAT(t.month_tsx, '%Y-%m') = DATE_FORMAT(ma.allowance_month, '%Y-%m')
-                WHERE t.type_tsx = 'OUT'";
+                WHERE t.type_tsx = 'OUT'
+                AND t.deleted_at IS NULL";
     
         $params = [];
         $types = "";
@@ -150,5 +151,12 @@ class ReportOut {
     
         $stmt->execute();
         return $stmt->get_result()->fetch_assoc();
+    }
+
+    public function softDelete($id) {
+        $sql = "UPDATE gallon_tsx SET deleted_at = NOW() WHERE id_tsx = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $id);
+        return $stmt->execute();
     }
 }

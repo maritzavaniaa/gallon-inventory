@@ -197,7 +197,13 @@ switch ($url) {
             $id = (int)str_replace('users/toggle/', '', $url);
             require_once '../app/controllers/UserController.php';
             $controller = new UserController($db);
-            $controller->toggleStatus($id);            
+            $controller->toggleStatus($id);  
+            
+        } elseif (strpos($url, 'reports/out/delete/') === 0) {
+            $id = str_replace('reports/out/delete/', '', $url);
+            require_once '../app/controllers/ReportOutController.php';
+            $controller = new ReportOutController($db);
+            $controller->delete($id);          
             
         } else {
             // Dashboard & Default Access

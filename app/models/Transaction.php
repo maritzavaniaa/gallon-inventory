@@ -304,8 +304,8 @@ class Transaction {
      */
     public function getCurrentStock() {
         $sql = "SELECT 
-                    SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as stock_in,
-                    SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as stock_out
+                    SUM(CASE WHEN type_tsx = 'IN' AND deleted_at IS NULL THEN quantity ELSE 0 END) as stock_in,
+                    SUM(CASE WHEN type_tsx = 'OUT' AND deleted_at IS NULL THEN quantity ELSE 0 END) as stock_out
                 FROM gallon_tsx";
         
         $result = $this->conn->query($sql)->fetch_assoc();
@@ -329,7 +329,8 @@ class Transaction {
                     SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as total_in,
                     SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as total_out
                 FROM gallon_tsx 
-                WHERE date_tsx = ?";
+                WHERE date_tsx = ? 
+                AND deleted_at IS NULL"; 
                 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $today);
