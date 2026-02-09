@@ -144,12 +144,18 @@ switch ($url) {
         $controller->export();
         break;
     
-    // case 'reports/in':
-    //     require_once '../app/models/ReportIn.php'; 
-    //     require_once '../app/controllers/ReportInController.php';
-    //     $controller = new ReportInController($db);
-    //     $controller->index();
-    //     break;
+    case 'reports/in':
+        require_once '../app/models/ReportIn.php'; 
+        require_once '../app/controllers/ReportInController.php';
+        $controller = new ReportInController($db);
+        $controller->index();
+        break;
+
+    case 'reports/in/export':
+        require_once '../app/controllers/ReportInController.php';
+        $controller = new ReportInController($db);
+        $controller->export();
+        break;
     
     case 'reports':
         header('Location: ?url=reports/out');
@@ -198,12 +204,18 @@ switch ($url) {
             require_once '../app/controllers/UserController.php';
             $controller = new UserController($db);
             $controller->toggleStatus($id);  
-            
+
         } elseif (strpos($url, 'reports/out/delete/') === 0) {
             $id = str_replace('reports/out/delete/', '', $url);
             require_once '../app/controllers/ReportOutController.php';
             $controller = new ReportOutController($db);
-            $controller->delete($id);          
+            $controller->delete($id);   
+            
+        } elseif (strpos($url, 'reports/in/delete/') === 0) {
+            $id = str_replace('reports/in/delete/', '', $url);
+            require_once '../app/controllers/ReportInController.php';
+            $controller = new ReportInController($db);
+            $controller->delete($id);   
             
         } else {
             // Dashboard & Default Access
