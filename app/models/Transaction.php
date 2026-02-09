@@ -115,8 +115,12 @@ class Transaction {
         if ($quantity <= 0) {
             return ['success' => false, 'message' => 'Quantity harus lebih dari 0'];
         }
-        
-        // Query disesuaikan dengan skema: id_share untuk IN biasanya NULL atau 'SUPPLIER'
+
+        $today = date('Y-m-d');
+        if ($tsxDate > $today) {
+            return ['success' => false, 'message' => 'Tanggal transaksi masuk tidak boleh di masa depan.'];
+        }
+
         $sql = "INSERT INTO gallon_tsx 
             (id_share, date_tsx, month_tsx, type_tsx, quantity, reference_doc, notes, recorded_by, created_at) 
             VALUES (NULL, ?, ?, 'IN', ?, ?, ?, ?, NOW())";

@@ -23,6 +23,14 @@ ob_start();
     </div>
 </div>
 
+<?php 
+$comparisonLabel = [
+    'week'  => 'MINGGU',
+    'month' => 'BULAN',
+    'year'  => 'TAHUN'
+];
+?>
+
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
     <!-- Stok Gudang -->
@@ -80,8 +88,8 @@ ob_start();
                             </svg>
                             <?= abs($pOut) ?>%
                         </span>
-                        <span class="text-[10px] text-gray-400 font-medium tracking-tight uppercase">
-                            vs <?= $tabs[$range] ?> lalu
+                        <span class="text-[10px] text-gray-400 font-medium tracking-tight">
+                            vs <?= $comparisonLabel[$range] ?> lalu
                         </span>
                     </div>
                 </div>
@@ -119,8 +127,8 @@ ob_start();
                             </svg>
                             <?= abs($pIn) ?>%
                         </span>
-                        <span class="text-[10px] text-gray-400 font-medium tracking-tight uppercase">
-                            vs <?= $tabs[$range] ?> lalu
+                        <span class="text-[10px] text-gray-400 font-medium tracking-tight">
+                            vs <?= $comparisonLabel[$range] ?> lalu
                         </span>
                     </div>
                 </div>

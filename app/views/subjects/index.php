@@ -131,7 +131,7 @@ include '../app/views/components/filter-container.php';
             <?php if (empty($subjects)): ?>
                 <tr>
                 <td colspan="6" class="py-16 text-center">
-                        <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data Grade</p>
+                        <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data Penerima</p>
                         <p class="text-gray-500 text-lg">Klik tombol "Tambah Penerima Baru" untuk memulai</p>
                     </td>
                 </tr>
