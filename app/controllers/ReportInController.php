@@ -41,14 +41,14 @@ class ReportInController extends Controller {
                 'label' => 'Stok Internal',
                 'value' => $stock['remaining'],
                 'unit'  => 'Gallons',
-                'color' => 'text-blue-800',
+                'color' => 'text-blue-600',
                 'subtext' => 'Total stok saat ini'
             ],
             [
                 'label' => 'Total Masuk Periode Ini', 
                 'value' => $totalInFiltered,
                 'unit'  => 'Gallons',
-                'color' => 'text-emerald-600',
+                'color' => 'text-green-600',
                 'subtext' => 'Berdasarkan filter tanggal'
             ]
         ];

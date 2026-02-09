@@ -42,7 +42,7 @@ class ReportOutController extends Controller {
                 'label' => 'Total Gallon Keluar',
                 'value' => $totalQty,
                 'unit'  => 'Gallons',
-                'color' => 'text-red-500',
+                'color' => 'text-red-600',
                 'subtext' => 'Total pengambilan periode ini'
             ],
             [
@@ -56,7 +56,7 @@ class ReportOutController extends Controller {
                 'label' => 'Rata-rata Pengambilan',
                 'value' => $rataRata,
                 'unit'  => 'Gallon/Orang',
-                'color' => 'text-emerald-500',
+                'color' => 'text-green-600',
                 'subtext' => 'Rasio gallon per individu'
             ]
         ];

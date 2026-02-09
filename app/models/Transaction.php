@@ -352,5 +352,123 @@ class Transaction {
         $stmt->bind_param("i", $idTsx);
         return $stmt->execute();
     }
+
+    public function getDashboardStats($range) {
+        $currentWhere = "WHERE deleted_at IS NULL";
+        $prevWhere = "WHERE deleted_at IS NULL";
+        
+        // Logika penentuan range sekarang vs sebelumnya
+        if ($range === 'week') {
+            $currentWhere .= " AND YEARWEEK(date_tsx, 1) = YEARWEEK(CURDATE(), 1)";
+            $prevWhere .= " AND YEARWEEK(date_tsx, 1) = YEARWEEK(CURDATE(), 1) - 1";
+        } elseif ($range === 'month') {
+            $currentWhere .= " AND MONTH(date_tsx) = MONTH(CURDATE()) AND YEAR(date_tsx) = YEAR(CURDATE())";
+            $prevWhere .= " AND MONTH(date_tsx) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(date_tsx) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))";
+        } elseif ($range === 'year') {
+            $currentWhere .= " AND YEAR(date_tsx) = YEAR(CURDATE())";
+            $prevWhere .= " AND YEAR(date_tsx) = YEAR(CURDATE()) - 1";
+        }
+    
+        // Query data periode ini
+        $sqlCurr = "SELECT 
+                    SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as out_curr,
+                    SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as in_curr
+                    FROM gallon_tsx $currentWhere";
+        
+        // Query data periode lalu
+        $sqlPrev = "SELECT 
+                    SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as out_prev,
+                    SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as in_prev
+                    FROM gallon_tsx $prevWhere";
+    
+        $curr = $this->conn->query($sqlCurr)->fetch_assoc();
+        $prev = $this->conn->query($sqlPrev)->fetch_assoc();
+    
+        // Fungsi hitung persen: ((skrg - lalu) / lalu) * 100
+        $calcPct = fn($c, $p) => $p > 0 ? round((($c - $p) / $p) * 100) : ($c > 0 ? 100 : 0);
+    
+        return [
+            'total_out' => $curr['out_curr'] ?? 0,
+            'total_in'  => $curr['in_curr'] ?? 0,
+            'pct_out'   => $calcPct($curr['out_curr'], $prev['out_prev']),
+            'pct_in'    => $calcPct($curr['in_curr'], $prev['in_prev'])
+        ];
+    }
+    
+    public function getChartData($range) {
+        $labels = [];
+        $dataOut = [];
+        $dataIn = [];
+    
+        if ($range === 'week') {
+            // Label: Senin - Minggu
+            $labels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+            // Mengambil data 7 hari terakhir (dimulai dari Senin minggu ini)
+            $sql = "SELECT 
+                        WEEKDAY(date_tsx) as day_idx,
+                        SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as total_out,
+                        SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as total_in
+                    FROM gallon_tsx 
+                    WHERE YEARWEEK(date_tsx, 1) = YEARWEEK(CURDATE(), 1) 
+                    AND deleted_at IS NULL
+                    GROUP BY day_idx";
+            
+            $result = $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+            $mapped = array_fill(0, 7, ['out' => 0, 'in' => 0]);
+            foreach ($result as $row) {
+                $mapped[$row['day_idx']] = ['out' => (int)$row['total_out'], 'in' => (int)$row['total_in']];
+            }
+            $dataOut = array_column($mapped, 'out');
+            $dataIn = array_column($mapped, 'in');
+    
+        } elseif ($range === 'month') {
+            // Label: Minggu 1 - Minggu 5
+            $labels = ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4', 'Minggu 5'];
+            $sql = "SELECT 
+                        FLOOR((DAY(date_tsx) - 1) / 7) as week_idx,
+                        SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as total_out,
+                        SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as total_in
+                    FROM gallon_tsx 
+                    WHERE MONTH(date_tsx) = MONTH(CURDATE()) AND YEAR(date_tsx) = YEAR(CURDATE())
+                    AND deleted_at IS NULL
+                    GROUP BY week_idx";
+            
+            $result = $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+            $mapped = array_fill(0, 5, ['out' => 0, 'in' => 0]);
+            foreach ($result as $row) {
+                if($row['week_idx'] < 5) {
+                    $mapped[$row['week_idx']] = ['out' => (int)$row['total_out'], 'in' => (int)$row['total_in']];
+                }
+            }
+            $dataOut = array_column($mapped, 'out');
+            $dataIn = array_column($mapped, 'in');
+    
+        } elseif ($range === 'year') {
+            // Label: Jan - Des
+            $labels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            $sql = "SELECT 
+                        MONTH(date_tsx) - 1 as month_idx,
+                        SUM(CASE WHEN type_tsx = 'OUT' THEN quantity ELSE 0 END) as total_out,
+                        SUM(CASE WHEN type_tsx = 'IN' THEN quantity ELSE 0 END) as total_in
+                    FROM gallon_tsx 
+                    WHERE YEAR(date_tsx) = YEAR(CURDATE())
+                    AND deleted_at IS NULL
+                    GROUP BY month_idx";
+            
+            $result = $this->conn->query($sql)->fetch_all(MYSQLI_ASSOC);
+            $mapped = array_fill(0, 12, ['out' => 0, 'in' => 0]);
+            foreach ($result as $row) {
+                $mapped[$row['month_idx']] = ['out' => (int)$row['total_out'], 'in' => (int)$row['total_in']];
+            }
+            $dataOut = array_column($mapped, 'out');
+            $dataIn = array_column($mapped, 'in');
+        }
+    
+        return [
+            'labels' => $labels,
+            'out' => $dataOut,
+            'in' => $dataIn
+        ];
+    }
 }
 ?>
