@@ -46,7 +46,7 @@ $comparisonLabel = [
 
             <div class="flex items-end justify-between">
                 <div class="flex flex-col">
-                    <span class="text-5xl font-black text-gray-900 tracking-tighter">
+                    <span class="text-4xl font-bold text-gray-900 tracking-tighter">
                         <?= number_format($stock['remaining']) ?>
                     </span>
                     <p class="text-sm font-medium text-gray-400 mt-1">
@@ -77,7 +77,7 @@ $comparisonLabel = [
 
             <div class="flex items-end justify-between">
                 <div class="flex flex-col">
-                    <span class="text-5xl font-black text-gray-900 tracking-tighter">
+                    <span class="text-4xl font-bold text-gray-900 tracking-tighter">
                         <?= number_format($stats['total_out']) ?>
                     </span>
                     <div class="flex items-center gap-2 mt-1">
@@ -116,7 +116,7 @@ $comparisonLabel = [
 
             <div class="flex items-end justify-between">
                 <div class="flex flex-col">
-                    <span class="text-5xl font-black text-gray-900 tracking-tighter">
+                    <span class="text-4xl font-bold text-gray-900 tracking-tighter">
                         <?= number_format($stats['total_in']) ?>
                     </span>
                     <div class="flex items-center gap-2 mt-1">

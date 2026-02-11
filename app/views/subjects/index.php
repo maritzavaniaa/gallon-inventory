@@ -184,6 +184,21 @@ include '../app/views/components/filter-container.php';
                     <!-- Action Buttons -->
                     <td class="py-3 px-5">
                         <div class="flex justify-center gap-2">
+                            <?php
+                            // Logic Cek Jatah Bulan Ini
+                            $hasAllowance = $this->subjectModel->hasAllowanceThisMonth($subject['id_share']);
+                            if (!$hasAllowance && $subject['status'] == 'aktif'): 
+                            ?>
+                                <a href="?url=subjects/activate_allowance/<?= $subject['id_share'] ?>" 
+                                onclick="return confirm('Aktifkan jatah galon bulan ini untuk <?= htmlspecialchars($subject['name_subject']) ?>?')"
+                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all"
+                                title="Beri Jatah Bulan Ini">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    KUOTA
+                                </a>
+                            <?php endif; ?>
                             <a href="?url=subjects/edit/<?= $subject['id_share'] ?>" 
                                class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

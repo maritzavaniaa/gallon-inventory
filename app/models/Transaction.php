@@ -25,6 +25,14 @@ class Transaction {
                 'success' => false, 
                 'message' => 'Sesi berakhir. Silakan login kembali untuk mencatat transaksi.'];
         }
+
+        $currentStock = $this->getCurrentStock();
+        if ($currentStock['remaining'] < $quantity) {
+            return [
+                'success' => false,
+                'message' => "Stok gudang tidak mencukupi! Sisa stok: " . $currentStock['remaining'] . " galon, permintaan: " . $quantity . " galon."
+            ];
+        }
         
         // Validation
         $validation = $this->validateOut($idShare, $quantity, $tsxDate);
