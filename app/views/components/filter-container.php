@@ -13,7 +13,7 @@ $hasFilters = $hasFilters ?? false;
 
 <form method="GET" action="<?= htmlspecialchars($action) ?>" class="mb-6">
     <?php if (isset($_GET['url'])): ?>
-        <input type="hidden" name="url" value="<?= htmlspecialchars($_GET['url']) ?>">
+        <input type="hidden" name="url" value="<?= htmlspecialchars($_GET['url'])  ?>">
     <?php endif; ?>
     
     <div class="bg-white rounded-md shadow-md border border-gray-200 p-6">
@@ -41,7 +41,7 @@ $hasFilters = $hasFilters ?? false;
             <?= $searchContent ?? '' ?>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
             <?= $filterContent ?? '' ?>
         </div>
     </div>

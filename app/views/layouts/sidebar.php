@@ -6,7 +6,9 @@ $isSubjects = strpos($currentUrl, 'subject') !== false;
 $isDashboard = $currentUrl === 'dashboard';
 $isUsers = strpos($currentUrl, 'user') !== false;
 $isTransactions = strpos($currentUrl, 'transaction') !== false;
-$isReports = strpos($currentUrl, 'report') !== false;
+$isReportsOut   = $currentUrl === 'reports/out';
+$isReportsIn    = $currentUrl === 'reports/in';
+$isReports      = strpos($currentUrl, 'report') !== false;
 ?>
 
 <aside class="w-64 min-h-screen flex flex-col fixed left-0 top-0" style="background: linear-gradient(180deg, #1F4396 0%, #152F6B 100%);">
@@ -46,14 +48,39 @@ $isReports = strpos($currentUrl, 'report') !== false;
         </a>
 
         <!-- Laporan -->
-        <a href="?url=reports" 
-            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all <?= $isReports ? 'bg-white bg-opacity-20 shadow-lg' : 'hover:bg-white hover:bg-opacity-10' ?>"
-            style="color: <?= $isReports ? '#ffffff' : '#E8EFFF' ?>;">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <span class="font-semibold">Laporan</span>
-        </a>
+        <div class="space-y-1">
+            <button onclick="toggleReportMenu()" 
+                    id="reportMenuButton"
+                    class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all <?= ($isReportsIn || $isReportsOut) ? 'bg-white bg-opacity-20' : 'hover:bg-white hover:bg-opacity-10' ?>"
+                    style="color: <?= ($isReportsIn || $isReportsOut) ? '#ffffff' : '#E8EFFF' ?>;">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="font-semibold">Laporan</span>
+                </div>
+                <svg id="reportMenuArrow" 
+                    class="w-4 h-4 transform transition-transform duration-300 ease-in-out <?= ($isReportsIn || $isReportsOut) ? 'rotate-180' : '' ?>" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            
+            <div id="reportMenu" class="ml-8 space-y-1 <?= ($isReportsIn || $isReportsOut) ? '' : 'hidden' ?>">
+                <a href="?url=reports/out" 
+                   class="block px-4 py-2 rounded-lg transition-all <?= $isReportsOut ? 'bg-white bg-opacity-20 font-semibold' : 'hover:bg-white hover:bg-opacity-10' ?>"
+                   style="color: <?= $isReportsOut ? '#ffffff' : '#E8EFFF' ?>;">
+                    Distribusi (Out)
+                </a>
+                <a href="?url=reports/in" 
+                   class="block px-4 py-2 rounded-lg transition-all <?= $isReportsIn ? 'bg-white bg-opacity-20 font-semibold' : 'hover:bg-white hover:bg-opacity-10' ?>"
+                   style="color: <?= $isReportsIn ? '#ffffff' : '#E8EFFF' ?>;">
+                    Intern (In)
+                </a>
+            </div>
+        </div>
 
         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
             <!-- Data Master (Dropdown) -->
@@ -123,10 +150,29 @@ $isReports = strpos($currentUrl, 'report') !== false;
 
 <!-- JavaScript for Dropdown -->
 <script>
+function toggleReportMenu() {
+    const menu = document.getElementById('reportMenu');
+    const arrow = document.getElementById('reportMenuArrow');
+    
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+    } else {
+        menu.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+    }
+}
+
 function toggleMasterMenu() {
     const menu = document.getElementById('masterMenu');
     const arrow = document.getElementById('masterMenuArrow');
-    menu.classList.toggle('hidden');
-    arrow.classList.toggle('rotate-180');
+    
+    if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+    } else {
+        menu.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+    }
 }
 </script>

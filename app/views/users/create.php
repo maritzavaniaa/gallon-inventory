@@ -6,7 +6,7 @@ ob_start();
 <div class="max-w-3xl mx-auto">
     <div class="bg-white rounded-md shadow-md p-8">
         <div class="mb-8">
-            <h1 class="text-3xl font-semibold text-gray-800 mb-2">Tambah User Baru</h1>
+            <h1 class="text-3xl font-semibold text-gray-800 mb-2">Tambah Akun Baru</h1>
             <p class="text-lg text-gray-700">Buat akun pengguna baru untuk mengakses sistem</p>
         </div>
         
@@ -19,7 +19,7 @@ ob_start();
                 <input type="text" 
                        name="username" 
                        required 
-                       placeholder="Contoh: admin123, user_finance"
+                       placeholder="Contoh: admin123, user_security"
                        class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
                 <p class="text-sm text-gray-500 mt-2">Username harus unik dan tidak boleh sama dengan user lain</p>
             </div>
@@ -33,7 +33,7 @@ ob_start();
                        name="password" 
                        required 
                        minlength="6"
-                       placeholder="Minimal 6 karakter"
+                       placeholder="Password minimal 6 karakter"
                        class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
                 <p class="text-sm text-gray-500 mt-2">Password minimal 6 karakter untuk keamanan</p>
             </div>
@@ -48,10 +48,8 @@ ob_start();
                         class="w-full p-4 text-lg border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-300 focus:border-blue-500">
                     <option value="">-- Pilih Role --</option>
                     <option value="admin">Admin (Akses Penuh)</option>
-                    <option value="general_user">General User (Input Transaction Only)</option>
+                    <option value="general_user">General User (Hanya Input Transaksi dan Laporan)</option>
                 </select>
-
-                <p class="text-sm text-gray-500 mt-2">Admin dapat mengubah data, User hanya dapat melihat</p>
             </div>
             
             <div class="flex flex-col space-y-3 pt-6">
@@ -60,7 +58,7 @@ ob_start();
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Simpan User
+                    Simpan Akun
                 </button>
                 
                 <a href="?url=users" 

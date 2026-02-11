@@ -131,16 +131,36 @@ switch ($url) {
         $controller->storeIn();
         break;
         
-    case 'reports':
-        require_once '../app/controllers/ReportController.php';
-        $controller = new ReportController($db);
+    case 'reports/out':
+        require_once '../app/models/ReportOut.php'; 
+        require_once '../app/controllers/ReportOutController.php'; 
+        $controller = new ReportOutController($db); 
+        $controller->index(); 
+        break;
+        
+    case 'reports/out/export':
+        require_once '../app/controllers/ReportOutController.php';
+        $controller = new ReportOutController($db);
+        $controller->export();
+        break;
+    
+    case 'reports/in':
+        require_once '../app/models/ReportIn.php'; 
+        require_once '../app/controllers/ReportInController.php';
+        $controller = new ReportInController($db);
         $controller->index();
         break;
 
-    case 'test-tsx':
-        require_once 'test-tsx.php';  // ← Nama file kamu
+    case 'reports/in/export':
+        require_once '../app/controllers/ReportInController.php';
+        $controller = new ReportInController($db);
+        $controller->export();
         break;
-       
+    
+    case 'reports':
+        header('Location: ?url=reports/out');
+        break;
+
     default:
         // Dynamic routing untuk edit/update/delete dengan ID
         if (strpos($url, 'grades/edit/') === 0) {
@@ -183,7 +203,19 @@ switch ($url) {
             $id = (int)str_replace('users/toggle/', '', $url);
             require_once '../app/controllers/UserController.php';
             $controller = new UserController($db);
-            $controller->toggleStatus($id);            
+            $controller->toggleStatus($id);  
+
+        } elseif (strpos($url, 'reports/out/delete/') === 0) {
+            $id = str_replace('reports/out/delete/', '', $url);
+            require_once '../app/controllers/ReportOutController.php';
+            $controller = new ReportOutController($db);
+            $controller->delete($id);   
+            
+        } elseif (strpos($url, 'reports/in/delete/') === 0) {
+            $id = str_replace('reports/in/delete/', '', $url);
+            require_once '../app/controllers/ReportInController.php';
+            $controller = new ReportInController($db);
+            $controller->delete($id);   
             
         } else {
             // Dashboard & Default Access

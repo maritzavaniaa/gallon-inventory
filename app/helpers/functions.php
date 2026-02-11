@@ -73,6 +73,7 @@ function getPagination($totalRecords, $currentPage = 1, $perPage = 50) {
  */
 function getDivisionList() {
     return [
+        "PABRIK PANDAAN",
         "FINANCE", 
         "CSR", 
         "HUMAN RESOURCE", 
@@ -80,12 +81,13 @@ function getDivisionList() {
         "MAN-01 YUDHISTIRA", 
         "MAN-01 GATHOTKACA", 
         "MAN-02 BIMA", 
-        "MAN-02 SRIKANDI", 
-        "MAN-02 SHINTA", 
+        "MAN-03 SRIKANDI", 
+        "MAN-03 SHINTA", 
         "PERFORMANCE", 
         "QA", 
         "SHE", 
-        "TEHNIK"
+        "TEHNIK",
+        "KBC"
     ];
 }
 

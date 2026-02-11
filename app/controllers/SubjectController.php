@@ -153,6 +153,33 @@ class SubjectController extends Controller{
         exit;
     }
 
+    public function activate_allowance($id_share) {
+        $subject = $this->subjectModel->findById($id_share);
+        if (!$subject) {
+            header('Location: ?url=subjects&error=notfound');
+            exit;
+        }
+    
+        $amount = ($subject['type_subject'] == 'karyawan') 
+                   ? $subject['grade_allowance'] 
+                   : $subject['default_allowance'];
+    
+        $currentMonth = date('Y-m-01');
+        
+        // Insert ke monthly_allowance
+        $sql = "INSERT INTO monthly_allowance (id_share, allowance_month, amount, source, created_at) 
+                VALUES (?, ?, ?, 'manual', NOW())";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bind_param("ssi", $id_share, $currentMonth, $amount);
+        
+        if ($stmt->execute()) {
+            header('Location: ?url=subjects&success=4'); // success=4: Jatah diaktifkan
+        } else {
+            header('Location: ?url=subjects&error=failed');
+        }
+        exit;
+    }
+
     public function getUniqueDivisions() {
         $sql = "SELECT DISTINCT division 
                 FROM subject 

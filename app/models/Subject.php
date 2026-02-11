@@ -245,6 +245,17 @@ class Subject {
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function hasAllowanceThisMonth($id_share) {
+        $currentMonth = date('Y-m-01');
+        $sql = "SELECT COUNT(*) as total FROM monthly_allowance 
+                WHERE id_share = ? AND allowance_month = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $id_share, $currentMonth);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_assoc();
+        return $result['total'] > 0;
+    }
+
     public function getStats() {
         $sql = "SELECT 
                     COUNT(*) as total,

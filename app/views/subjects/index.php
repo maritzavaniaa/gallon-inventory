@@ -17,17 +17,27 @@ $searchContent = ob_get_clean();
 
 // Baris 2: Dropdowns (Tipe, Status, Divisi)
 ob_start(); ?>
-    <?php 
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Tipe Subject
         $label = 'Kategori'; $name = 'type'; 
         $options = ['karyawan' => 'Karyawan', 'non_karyawan' => 'Non-Karyawan'];
         include '../app/views/components/filter-dropdown.php'; 
     ?>
-    <?php 
+</div>
+
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Status
         $label = 'Status'; $name = 'status'; 
         $options = ['aktif' => 'Aktif', 'non_aktif' => 'Non-Aktif'];
         include '../app/views/components/filter-dropdown.php'; 
     ?>
-    <?php 
+</div>
+
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Division
         $label = 'Divisi'; $name = 'division'; 
         $options = [];
         if (isset($allDivisions)) {
@@ -37,13 +47,19 @@ ob_start(); ?>
         }
         include '../app/views/components/filter-dropdown.php'; 
     ?>
-    <?php 
+</div>
+
+<div class="md:col-span-3">
+    <?php  
+        // Dropdown Pagination
         $label = 'Tampilkan'; $name = 'per_page'; 
         $options = ['10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'];
         include '../app/views/components/filter-dropdown.php'; 
         // '1' => '1 Baris', '2' => '2 Baris', '3' => '3 Baris'
         // '10' => '10 Baris', '50' => '50 Baris', '100' => '100 Baris', '200' => '200 Baris', '500' => '500 Baris'
     ?>
+</div>
+
 <?php 
 $filterContent = ob_get_clean(); 
 ?>
@@ -115,7 +131,7 @@ include '../app/views/components/filter-container.php';
             <?php if (empty($subjects)): ?>
                 <tr>
                 <td colspan="6" class="py-16 text-center">
-                        <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data Grade</p>
+                        <p class="text-gray-600 text-xl font-semibold mb-2">Belum Ada Data Penerima</p>
                         <p class="text-gray-500 text-lg">Klik tombol "Tambah Penerima Baru" untuk memulai</p>
                     </td>
                 </tr>
@@ -168,6 +184,21 @@ include '../app/views/components/filter-container.php';
                     <!-- Action Buttons -->
                     <td class="py-3 px-5">
                         <div class="flex justify-center gap-2">
+                            <?php
+                            // Logic Cek Jatah Bulan Ini
+                            $hasAllowance = $this->subjectModel->hasAllowanceThisMonth($subject['id_share']);
+                            if (!$hasAllowance && $subject['status'] == 'aktif'): 
+                            ?>
+                                <a href="?url=subjects/activate_allowance/<?= $subject['id_share'] ?>" 
+                                onclick="return confirm('Aktifkan jatah galon bulan ini untuk <?= htmlspecialchars($subject['name_subject']) ?>?')"
+                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all"
+                                title="Beri Jatah Bulan Ini">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    KUOTA
+                                </a>
+                            <?php endif; ?>
                             <a href="?url=subjects/edit/<?= $subject['id_share'] ?>" 
                                class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
