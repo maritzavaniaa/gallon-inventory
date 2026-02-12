@@ -70,7 +70,17 @@ $filterContent = ob_get_clean();
         <p class="text-lg text-gray-700">Kelola data penerima, divisi, dan kuota galon</p>
     </div>
     
-    <div class="flex-shrink-0">
+    <div class="flex items-center gap-3">
+        <button type="button" 
+           onclick="confirmSync()"
+           class="inline-flex items-center gap-3 text-white font-semibold text-md px-5 py-2 rounded-md shadow-md transition-all hover:shadow-xl"
+           style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); min-height: 56px; white-space: nowrap;">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>Sync Kuota</span>
+        </button>
+
         <a href="?url=subjects/create" 
            class="inline-flex items-center gap-3 text-white font-semibold text-md px-5 py-2 rounded-md shadow-md transition-all hover:shadow-xl"
            style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); min-height: 56px; white-space: nowrap;">
@@ -94,25 +104,28 @@ $hasFilters = !empty($activeFilters);
 include '../app/views/components/filter-container.php';
 ?>
 
-<?php if (isset($_GET['success'])): ?>
-<div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
-    <strong class="font-bold text-green-700">Berhasil!</strong>
-    <?php 
-    $msg = [1 => 'Data penerima berhasil ditambahkan!', 2 => 'Data berhasil diperbarui!', 3 => 'Data berhasil dihapus!'];
-    echo $msg[$_GET['success']] ?? 'Operasi berhasil!';
-    ?>
-</div>
+<?php 
+$msgList = [
+    '1'              => 'Data penerima berhasil ditambahkan!', 
+    '2'              => 'Data berhasil diperbarui!', 
+    '3'              => 'Data berhasil dihapus!',
+    'sync_ok'        => 'Jatah untuk ' . ($_GET['count'] ?? 0) . ' karyawan baru berhasil digenerate!',
+    'already_synced' => 'Semua karyawan sudah memiliki jatah (Data sudah sinkron).'
+];
+$successKey = $_GET['success'] ?? null;
+if ($successKey && isset($msgList[$successKey])): 
+?>
+    <div class="bg-green-50 border-2 border-green-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg animate-pulse">
+        <strong class="font-bold text-green-700">Berhasil!</strong>
+        <?= $msgList[$successKey] ?>
+    </div>
 <?php endif; ?>
 
 <?php if (isset($_GET['error'])): ?>
-<div class="bg-red-50 border-2 border-red-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
-    <strong class="font-bold text-red-700">Gagal!</strong>
-    <?php if ($_GET['error'] == 'has_transaction'): ?>
-        Data tidak bisa dihapus karena memiliki riwayat transaksi. Gunakan fitur "Non-aktifkan" saja.
-    <?php else: ?>
-        Terjadi kesalahan sistem. Silakan coba lagi.
-    <?php endif; ?>
-</div>
+    <div class="bg-red-50 border-2 border-red-500 text-gray-900 px-6 py-4 rounded-lg mb-6 text-lg">
+        <strong class="font-bold text-red-700">Gagal!</strong>
+        <?= ($_GET['error'] == 'has_transaction') ? 'Data tidak bisa dihapus karena memiliki riwayat transaksi.' : 'Terjadi kesalahan sistem.' ?>
+    </div>
 <?php endif; ?>
 
 <div class="bg-white rounded-md overflow-hidden border-2 border-gray-200 shadow-sm">
@@ -184,21 +197,6 @@ include '../app/views/components/filter-container.php';
                     <!-- Action Buttons -->
                     <td class="py-3 px-5">
                         <div class="flex justify-center gap-2">
-                            <?php
-                            // Logic Cek Jatah Bulan Ini
-                            $hasAllowance = $this->subjectModel->hasAllowanceThisMonth($subject['id_share']);
-                            if (!$hasAllowance && $subject['status'] == 'aktif'): 
-                            ?>
-                                <a href="?url=subjects/activate_allowance/<?= $subject['id_share'] ?>" 
-                                onclick="return confirm('Aktifkan jatah galon bulan ini untuk <?= htmlspecialchars($subject['name_subject']) ?>?')"
-                                class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all"
-                                title="Beri Jatah Bulan Ini">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                    </svg>
-                                    KUOTA
-                                </a>
-                            <?php endif; ?>
                             <a href="?url=subjects/edit/<?= $subject['id_share'] ?>" 
                                class="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold text-xs px-3 py-1.5 rounded shadow-sm transition-all">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -241,6 +239,33 @@ if (isset($pagination) && $pagination['totalPages'] > 1):
     include '../app/views/components/pagination.php'; 
 endif;
 ?>
+
+<!-- Sync Allowance Modal -->
+<div id="syncModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closeSyncModal()">
+    <div class="bg-white rounded-md shadow-md p-10 max-w-lg w-full mx-4 border-t-8 border-amber-500">
+        <div class="text-center mb-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-3 tracking-wider uppercase">Konfirmasi Sync Jatah</h2>
+            <p class="text-md text-gray-800 mb-4 leading-relaxed">
+                Sistem akan memindai seluruh penerima aktif dan memberikan jatah <strong class="text-amber-600">Bulan Berjalan</strong> bagi mereka yang belum memilikinya.
+            </p>
+            <div class="bg-amber-50 border-2 border-amber-200 rounded-lg p-4 mb-4 flex items-center justify-center gap-3">
+                <svg class="w-8 h-8 text-amber-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span class="text-lg font-bold text-amber-800">Proses Otomatis</span>
+            </div>
+            <p class="text-sm text-gray-500 italic">Data jatah yang sudah ada tidak akan diubah atau di-reset.</p>
+        </div>
+        <div class="flex flex-col gap-4">
+            <a href="?url=subjects/sync_allowance" class="block bg-amber-500 hover:bg-amber-600 text-white font-bold text-md py-4 rounded-md text-center transition-all shadow-lg uppercase">
+                YA, JALANKAN SYNC SEKARANG
+            </a>
+            <button onclick="closeSyncModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold text-md py-4 rounded-md transition-all uppercase">
+                KEMBALI
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closeDeleteModal()">
@@ -287,6 +312,14 @@ endif;
 </div>
 
 <script>
+function confirmSync() {
+    document.getElementById('syncModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+function closeSyncModal() {
+    document.getElementById('syncModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
 function confirmDelete(id, name) {
     document.getElementById('deleteName').textContent = name;
     document.getElementById('deleteId').textContent = 'ID Share: ' + id;

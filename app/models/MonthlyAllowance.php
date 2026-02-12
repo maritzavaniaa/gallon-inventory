@@ -238,5 +238,47 @@ class MonthlyAllowance {
             'data' => $data
         ];
     }
+
+    public function syncMissing($targetMonth = null) {
+        $allowance_month = $targetMonth ?: date('Y-m-01');
+
+        $sql = "INSERT INTO monthly_allowance (id_share, allowance_month, amount, source, created_at)
+                SELECT 
+                    s.id_share, 
+                    ?, 
+                    CASE 
+                        WHEN s.type_subject = 'karyawan' THEN g.default_allowance 
+                        ELSE s.default_allowance 
+                    END as amount,
+                    CASE 
+                        WHEN s.type_subject = 'karyawan' THEN 'grade' 
+                        ELSE 'manual' 
+                    END as source,
+                    NOW()
+                FROM subject s
+                LEFT JOIN grade_employee g ON s.id_grade = g.id_grade
+                WHERE s.status = 'aktif'
+                AND NOT EXISTS (
+                    SELECT 1 FROM monthly_allowance ma 
+                    WHERE ma.id_share = s.id_share 
+                    AND ma.allowance_month = ?
+                )";
+
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("ss", $allowance_month, $allowance_month);
+            $stmt->execute();
+            
+            return [
+                'success' => true,
+                'affected_rows' => $stmt->affected_rows
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }
 ?>

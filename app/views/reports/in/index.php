@@ -92,13 +92,16 @@ include '../app/views/components/summary-cards.php';
                 <th class="py-4 px-3 text-center text-white font-semibold border-r border-white border-opacity-20" style="width: 10%;">MASUK</th>
                 <th class="py-4 px-4 text-left text-white font-semibold border-r border-white border-opacity-20" style="width: 25%;">CATATAN</th>
                 <th class="py-4 px-4 text-center text-white font-semibold" style="width: 15%;">ADMIN</th>
+                
+                <?php if ($_SESSION['role'] === 'admin'): ?>
                 <th class="py-4 px-4 text-center text-white font-semibold" style="width: 10%;">AKSI</th>
+                <?php endif; ?>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($reports)): ?>
                 <tr>
-                    <td colspan="6" class="py-10 text-center text-gray-500 font-medium italic">
+                    <td colspan="<?= $_SESSION['role'] === 'admin' ? '7' : '6' ?>" class="py-10 text-center text-gray-500 font-medium italic">
                         Data tidak ditemukan.
                     </td>
                 </tr>
@@ -118,18 +121,21 @@ include '../app/views/components/summary-cards.php';
                     <td class="py-3 px-4 text-center text-xs font-semibold text-gray-400 uppercase italic">
                         <?= htmlspecialchars($r['admin_name']) ?>
                     </td>
+
+                    <?php if ($_SESSION['role'] === 'admin'): ?>
                     <td class="py-3 px-4">
                         <div class="flex justify-center">
-                        <button type="button"
-                                onclick='confirmDeleteIn(<?= json_encode($r["id_tsx"]) ?>, <?= json_encode($r["reference_doc"]) ?>, <?= json_encode($r["quantity"]) ?>, <?= json_encode(date("d/m/Y", strtotime($r["date_tsx"]))) ?>)'
-                                class="p-2 bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-all shadow-sm"
-                                title="Batalkan Transaksi">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
+                            <button type="button"
+                                    onclick='confirmDeleteIn(<?= json_encode($r["id_tsx"]) ?>, <?= json_encode($r["reference_doc"]) ?>, <?= json_encode($r["quantity"]) ?>, <?= json_encode(date("d/m/Y", strtotime($r["date_tsx"]))) ?>)'
+                                    class="p-2 bg-red-100 text-red-600 hover:bg-red-500 hover:text-white rounded-lg transition-all shadow-sm"
+                                    title="Batalkan Transaksi">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
                         </div>
                     </td>
+                    <?php endif; ?>
                 </tr>
                 <?php endforeach; ?>
             <?php endif; ?> 

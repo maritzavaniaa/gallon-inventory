@@ -195,9 +195,28 @@ class SubjectController extends Controller{
         
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-    
 
-    
+    public function sync_allowance() {
+        AuthMiddleware::checkAdmin();
+        
+        require_once '../app/models/MonthlyAllowance.php';
+        $allowanceModel = new MonthlyAllowance($this->db);
+        
+        $result = $allowanceModel->syncMissing();
+        
+        if ($result['success']) {
+            // Jika ada data yang berhasil ditambahkan (karyawan baru/missing)
+            if ($result['affected_rows'] > 0) {
+                header('Location: ?url=subjects&success=sync_ok&count=' . $result['affected_rows']);
+            } else {
+                // Jika semua sudah sinkron (tidak ada data baru yang masuk)
+                header('Location: ?url=subjects&success=already_synced');
+            }
+        } else {
+            header('Location: ?url=subjects&error=sync_failed');
+        }
+        exit;
+    }
 }
 
 
