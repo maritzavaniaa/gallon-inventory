@@ -242,14 +242,16 @@ endif;
 
 <!-- Sync Allowance Modal -->
 <div id="syncModal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50" onclick="if(event.target===this) closeSyncModal()">
-    <div class="bg-white rounded-md shadow-md p-10 max-w-lg w-full mx-4 border-t-8 border-amber-500">
+    <div class="bg-white rounded-md shadow-md p-10 max-w-lg w-full mx-4 border-t-8 border-orange-500">
         <div class="text-center mb-6">
-            <h2 class="text-lg font-bold text-gray-900 mb-3 tracking-wider uppercase">Konfirmasi Sync Jatah</h2>
+            <h2 class="text-lg font-bold text-gray-900 mb-3 tracking-wider uppercase">
+                KONFIRMASI SYNC JATAH
+            </h2>
             <p class="text-md text-gray-800 mb-4 leading-relaxed">
                 Sistem akan memindai seluruh penerima aktif dan memberikan jatah <strong class="text-amber-600">Bulan Berjalan</strong> bagi mereka yang belum memilikinya.
             </p>
-            <div class="bg-amber-50 border-2 border-amber-200 rounded-lg p-4 mb-4 flex items-center justify-center gap-3">
-                <svg class="w-8 h-8 text-amber-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white border-2 border-amber-200 rounded-lg p-4 mb-4 flex items-center justify-center gap-3">
+                <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
                 <span class="text-lg font-bold text-amber-800">Proses Otomatis</span>
@@ -257,10 +259,13 @@ endif;
             <p class="text-sm text-gray-500 italic">Data jatah yang sudah ada tidak akan diubah atau di-reset.</p>
         </div>
         <div class="flex flex-col gap-4">
-            <a href="?url=subjects/sync_allowance" class="block bg-amber-500 hover:bg-amber-600 text-white font-bold text-md py-4 rounded-md text-center transition-all shadow-lg uppercase">
+            <a href="?url=subjects/sync_allowance" 
+               style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: white !important; text-decoration: none !important; display: block !important;"
+               class="font-bold text-md py-4 rounded-md text-center transition-all shadow-lg uppercase hover:opacity-90">
                 YA, JALANKAN SYNC SEKARANG
             </a>
-            <button onclick="closeSyncModal()" class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold text-md py-4 rounded-md transition-all uppercase">
+            <button onclick="closeSyncModal()" 
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold text-md py-4 rounded-md transition-all uppercase">
                 KEMBALI
             </button>
         </div>

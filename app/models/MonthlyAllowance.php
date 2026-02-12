@@ -240,15 +240,15 @@ class MonthlyAllowance {
     }
 
     public function syncMissing($targetMonth = null) {
-        $allowance_month = $targetMonth ?: date('Y-m-01');
-
+        $allowance_month = $targetMonth ? date('Y-m-01', strtotime($targetMonth)) : date('Y-m-01');
+    
         $sql = "INSERT INTO monthly_allowance (id_share, allowance_month, amount, source, created_at)
                 SELECT 
                     s.id_share, 
                     ?, 
                     CASE 
-                        WHEN s.type_subject = 'karyawan' THEN g.default_allowance 
-                        ELSE s.default_allowance 
+                        WHEN s.type_subject = 'karyawan' THEN COALESCE(g.default_allowance, 0)
+                        ELSE COALESCE(s.default_allowance, 0)
                     END as amount,
                     CASE 
                         WHEN s.type_subject = 'karyawan' THEN 'grade' 
@@ -258,12 +258,12 @@ class MonthlyAllowance {
                 FROM subject s
                 LEFT JOIN grade_employee g ON s.id_grade = g.id_grade
                 WHERE s.status = 'aktif'
-                AND NOT EXISTS (
-                    SELECT 1 FROM monthly_allowance ma 
-                    WHERE ma.id_share = s.id_share 
-                    AND ma.allowance_month = ?
+                AND s.id_share NOT IN (
+                    SELECT ma.id_share 
+                    FROM monthly_allowance ma 
+                    WHERE ma.allowance_month = ?
                 )";
-
+    
         try {
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param("ss", $allowance_month, $allowance_month);
