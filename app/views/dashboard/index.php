@@ -38,18 +38,18 @@ $comparisonLabel = [
 
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-md font-bold text-gray-400 uppercase tracking-widest">
-                    Stok Gudang
+                <h3 class="text-lg font-bold text-gray-500 uppercase tracking-widest">
+                    Stok Internal
                 </h3>
                 <span class="flex h-2 w-2 rounded-full bg-blue-500"></span>
             </div>
 
             <div class="flex items-end justify-between">
                 <div class="flex flex-col">
-                    <span class="text-4xl font-bold text-gray-900 tracking-tighter">
+                    <span class="text-6xl font-bold text-gray-900 tracking-tighter">
                         <?= number_format($stock['remaining']) ?>
                     </span>
-                    <p class="text-sm font-medium text-gray-400 mt-1">
+                    <p class="text-md font-medium text-gray-500 mt-1">
                         Galon tersedia
                     </p>
                 </div>
@@ -66,10 +66,9 @@ $comparisonLabel = [
 
     <!-- Galon Keluar -->
     <div class="bg-white rounded-md border border-gray-100 shadow-sm px-6 py-4 relative overflow-hidden group hover:shadow-md transition-all duration-300">
-
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-md font-bold text-gray-400 uppercase tracking-widest">
+                <h3 class="text-lg font-bold text-gray-500 uppercase tracking-widest">
                     Galon Keluar
                 </h3>
                 <span class="flex h-2 w-2 rounded-full bg-red-500"></span>
@@ -77,18 +76,18 @@ $comparisonLabel = [
 
             <div class="flex items-end justify-between">
                 <div class="flex flex-col">
-                    <span class="text-4xl font-bold text-gray-900 tracking-tighter">
+                    <span class="text-6xl font-bold text-gray-900 tracking-tighter">
                         <?= number_format($stats['total_out']) ?>
                     </span>
                     <div class="flex items-center gap-2 mt-1">
                         <?php $pOut = $stats['pct_out']; ?>
-                        <span class="flex items-center text-xs font-bold <?= $pOut >= 0 ? 'text-red-500' : 'text-green-500' ?>">
+                        <span class="flex items-center text-xs font-bold <?= $pOut >= 0 ? 'text-green-500' : 'text-red-500' ?>">
                             <svg class="w-3 h-3 mr-0.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="<?= $pOut >= 0 ? 'M10 3a1 1 0 01.707.293l7 7a1 1 0 01-1.414 1.414L11 6.414V17a1 1 0 11-2 0V6.414L3.707 11.707a1 1 0 01-1.414-1.414l7-7A1 1 0 0110 3z' : 'M10 17a1 1 0 01-.707-.293l-7-7a1 1 0 011.414-1.414L9 13.586V3a1 1 0 112 0v10.586l5.293-5.293a1 1 0 111.414 1.414l-7 7A1 1 0 0110 17z' ?>"/>
                             </svg>
                             <?= abs($pOut) ?>%
                         </span>
-                        <span class="text-[10px] text-gray-400 font-medium tracking-tight">
+                        <span class="text-md text-gray-500 font-medium tracking-tight">
                             vs <?= $comparisonLabel[$range] ?> lalu
                         </span>
                     </div>
@@ -96,7 +95,8 @@ $comparisonLabel = [
 
                 <div class="p-4 bg-gradient-to-br from-red-50 to-orange-100 text-red-600 rounded-2xl shadow-inner border border-red-400/50">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                     </svg>
                 </div>
             </div>
@@ -105,10 +105,9 @@ $comparisonLabel = [
 
     <!-- Galon Masuk -->
     <div class="bg-white rounded-md border border-gray-100 shadow-sm px-6 py-4 relative overflow-hidden group hover:shadow-md transition-all duration-300">
-
         <div class="relative z-10">
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-md font-bold text-gray-400 uppercase tracking-widest">
+                <h3 class="text-lg font-bold text-gray-500 uppercase tracking-widest">
                     Galon Masuk
                 </h3>
                 <span class="flex h-2 w-2 rounded-full bg-green-500"></span>
@@ -116,7 +115,7 @@ $comparisonLabel = [
 
             <div class="flex items-end justify-between">
                 <div class="flex flex-col">
-                    <span class="text-4xl font-bold text-gray-900 tracking-tighter">
+                    <span class="text-6xl font-bold text-gray-900 tracking-tighter">
                         <?= number_format($stats['total_in']) ?>
                     </span>
                     <div class="flex items-center gap-2 mt-1">
@@ -127,7 +126,7 @@ $comparisonLabel = [
                             </svg>
                             <?= abs($pIn) ?>%
                         </span>
-                        <span class="text-[10px] text-gray-400 font-medium tracking-tight">
+                        <span class="text-md text-gray-500 font-medium tracking-tight">
                             vs <?= $comparisonLabel[$range] ?> lalu
                         </span>
                     </div>
@@ -135,11 +134,12 @@ $comparisonLabel = [
 
                 <div class="p-4 bg-gradient-to-br from-green-50 to-teal-100 text-green-600 rounded-2xl shadow-inner border border-green-400/50">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-2m-4-1v8m0 0l3-3m-3 3L9 8m-5 5h2.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293h3.172a1 1 0 00.707-.293l2.414-2.414a1 1 0 01.707-.293H20" />
                     </svg>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
 

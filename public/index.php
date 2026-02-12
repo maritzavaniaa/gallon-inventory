@@ -88,6 +88,12 @@ switch ($url) {
         $controller = new SubjectController($db);
         $controller->store();
         break;
+
+    case 'subjects/sync_allowance':
+        require_once '../app/controllers/SubjectController.php';
+        $controller = new SubjectController($db);
+        $controller->sync_allowance();
+        break;
         
     case 'grades':
         require_once '../app/controllers/GradeController.php';

@@ -87,7 +87,10 @@ function getDivisionList() {
         "QA", 
         "SHE", 
         "TEHNIK",
-        "KBC"
+        "KBC",
+        "BWI",
+        "IWS",
+        "REG 3"
     ];
 }
 

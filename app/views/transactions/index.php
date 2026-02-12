@@ -12,11 +12,11 @@ ob_start();
     <div class="flex gap-4">
         <div class="bg-white px-5 py-3 rounded-md border-2 border-gray-200 text-center shadow-sm">
             <p class="text-md text-gray-500 uppercase font-semibold tracking-wider">Stok Internal</p>
-            <p class="text-2xl font-bold text-blue-800"><?= $stock['remaining'] ?? 0 ?></p>
+            <p class="text-3xl font-bold text-blue-800"><?= $stock['remaining'] ?? 0 ?></p>
         </div>
         <div class="bg-white px-5 py-3 rounded-md border-2 border-gray-200 text-center shadow-sm">
             <p class="text-md text-gray-500 uppercase font-semibold tracking-wider">Keluar Hari Ini</p>
-            <p class="text-2xl font-bold text-green-600"><?= $stats_today['out'] ?? 0 ?></p>
+            <p class="text-3xl font-bold text-green-600"><?= $stats_today['out'] ?? 0 ?></p>
         </div>
     </div>
 </div>
@@ -51,7 +51,7 @@ ob_start();
         <div class="p-8 space-y-6">
             <div class="flex gap-2 items-end">
                 <div class="flex-1 relative"> 
-                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Cari Subjek (ID Share)</label>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Cari Penerima (ID Share)</label>
                     <input type="text" id="search-input" autocomplete="off" placeholder="Ketik minimal 2 angka..." inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
                             class="w-full px-4 py-3 rounded-md border-2 border-gray-200 focus:border-blue-500 outline-none transition-all">
                             
