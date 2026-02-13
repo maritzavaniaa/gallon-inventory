@@ -163,8 +163,9 @@ switch ($url) {
         $controller->export();
         break;
     
-    case 'reports':
-        header('Location: ?url=reports/out');
+    case 'help':
+        $pageTitle = 'Panduan Pengguna';
+        require_once '../app/views/helps/index.php';
         break;
 
     default:

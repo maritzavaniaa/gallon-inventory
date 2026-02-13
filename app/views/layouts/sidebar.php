@@ -9,6 +9,7 @@ $isTransactions = strpos($currentUrl, 'transaction') !== false;
 $isReportsOut   = $currentUrl === 'reports/out';
 $isReportsIn    = $currentUrl === 'reports/in';
 $isReports      = strpos($currentUrl, 'report') !== false;
+$isHelp = $currentUrl === 'help';
 ?>
 
 <aside class="w-64 min-h-screen flex flex-col fixed left-0 top-0" style="background: linear-gradient(180deg, #1F4396 0%, #152F6B 100%);">
@@ -129,6 +130,16 @@ $isReports      = strpos($currentUrl, 'report') !== false;
                 <span class="font-semibold">Manajemen Akun</span>
             </a>
         <?php endif; ?>
+
+        <!-- User Guide -->
+        <a href="?url=help" 
+            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all <?= $isHelp ? 'bg-white bg-opacity-20 shadow-lg' : 'hover:bg-white hover:bg-opacity-10' ?>"
+            style="color: <?= $isHelp ? '#ffffff' : '#E8EFFF' ?>;">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span class="font-semibold">Panduan User</span>
+        </a>
     </nav>
     
     <!-- User Info & Logout -->
