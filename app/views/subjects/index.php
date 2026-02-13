@@ -109,8 +109,8 @@ $msgList = [
     '1'              => 'Data penerima berhasil ditambahkan!', 
     '2'              => 'Data berhasil diperbarui!', 
     '3'              => 'Data berhasil dihapus!',
-    'sync_ok'        => 'Jatah untuk ' . ($_GET['count'] ?? 0) . ' karyawan baru berhasil digenerate!',
-    'already_synced' => 'Semua karyawan sudah memiliki jatah (Data sudah sinkron).'
+    'sync_ok'        => 'Kuota untuk ' . ($_GET['count'] ?? 0) . ' penerima baru berhasil diperbarui!',
+    'already_synced' => 'Semua penerima sudah memiliki kuota (Data sudah sinkron).'
 ];
 $successKey = $_GET['success'] ?? null;
 if ($successKey && isset($msgList[$successKey])): 
@@ -245,10 +245,10 @@ endif;
     <div class="bg-white rounded-md shadow-md p-10 max-w-lg w-full mx-4 border-t-8 border-orange-500">
         <div class="text-center mb-6">
             <h2 class="text-lg font-bold text-gray-900 mb-3 tracking-wider uppercase">
-                KONFIRMASI SYNC JATAH
+                KONFIRMASI SINKRONISASI KUOTA
             </h2>
             <p class="text-md text-gray-800 mb-4 leading-relaxed">
-                Sistem akan memindai seluruh penerima aktif dan memberikan jatah <strong class="text-amber-600">Bulan Berjalan</strong> bagi mereka yang belum memilikinya.
+                Sistem akan memindai seluruh penerima aktif dan memberikan kuota <strong class="text-amber-600">Bulan Berjalan</strong> bagi mereka yang belum memilikinya.
             </p>
             <div class="bg-white border-2 border-amber-200 rounded-lg p-4 mb-4 flex items-center justify-center gap-3">
                 <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -256,13 +256,13 @@ endif;
                 </svg>
                 <span class="text-lg font-bold text-amber-800">Proses Otomatis</span>
             </div>
-            <p class="text-sm text-gray-500 italic">Data jatah yang sudah ada tidak akan diubah atau di-reset.</p>
+            <p class="text-sm text-gray-500 italic">Data kuota yang sudah ada tidak akan diubah atau di-reset.</p>
         </div>
         <div class="flex flex-col gap-4">
             <a href="?url=subjects/sync_allowance" 
                style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: white !important; text-decoration: none !important; display: block !important;"
                class="font-bold text-md py-4 rounded-md text-center transition-all shadow-lg uppercase hover:opacity-90">
-                YA, JALANKAN SYNC SEKARANG
+                YA, SINKRONISASI SEKARANG
             </a>
             <button onclick="closeSyncModal()" 
                     class="bg-gray-300 hover:bg-gray-400 text-gray-900 font-bold text-md py-4 rounded-md transition-all uppercase">
